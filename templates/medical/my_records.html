@@ -1,0 +1,55 @@
+<div class="card card-table mb-0">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover table-center mb-0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date Created</th>
+                        <th>Description</th>
+                        <th>Attachment</th>
+                        <th>Created By</th>
+                        <th></th>
+                    </tr>     
+                </thead>
+                <tbody>
+                    {% for medical in medicals %}
+                    <tr>
+                        <td>{{medical.title}}<a href="javascript:void(0);"></a></td>
+                        <td>{{medical.date_created}}</td>
+                        <td>{{medical.description}}</td>
+                        <td><a href="#"></a></td>
+                        <td>
+                            {% if medical.created_by.is_staff %}
+                            <h2 class="table-avatar">
+                                <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
+                                    <img class="avatar-img rounded-circle" src="{{medical.created_by.profile_picture.url}}" alt="User Image">
+                                </a>
+                                <a href="doctor-profile.html">Dr. {{medical.created_by.get_full_name}}<span>{{medical.created_by.specialization}}</span></a>
+                            </h2>
+                            {% else %}  
+                            <h2 class="table-avatar">
+                                <a class="avatar avatar-sm mr-2">
+                                    <img class="avatar-img rounded-circle" src="{{medical.created_by.profile_picture.url}}" alt="User Image">
+                                </a>    
+                                {{medical.created_by.get_full_name}}
+                            </h2>
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            <div class="table-action">
+                                <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                                    <i class="far fa-eye"></i> View
+                                </a>
+                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
+                                    <i class="fas fa-print"></i> Print
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>  	
+            </table>
+        </div>
+    </div>
+</div>

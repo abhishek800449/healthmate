@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'videoapp',
     'accounts',
+    'appointment',
 ]
 
 MIDDLEWARE = [
@@ -73,18 +74,28 @@ WSGI_APPLICATION = 'healthmate.wsgi.application'
 
 # Custom user model
 
-AUTH_USER_MODEL = 'accounts.Account'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'healthmate',
+        'USER': 'postgres',
+        'PASSWORD': 'bajajcd10572',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

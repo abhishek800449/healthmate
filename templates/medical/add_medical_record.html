@@ -1,0 +1,32 @@
+<!-- Add Medical Records Modal -->
+<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Medical Records</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form action="{% url 'save_record' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}					
+            <div class="modal-body">
+                <input type="hidden" name="patient_id" value="{{ patientprofile.id }}">
+                <div class="form-group">
+                    <label>Title</label>
+                    {{form.title}}
+                </div>
+                <div class="form-group">
+                    <label>Description ( Optional )</label>
+                    {{form.description}}
+                </div>
+                <div class="form-group">
+                    <label>Upload File</label> 
+                    {{form.file_path}}
+                </div>	
+                <div class="submit-section text-center">
+                    <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+                    <button type="button" class="btn btn-secondary submit-btn" data-dismiss="modal">Cancel</button>							
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /Add Medical Records Modal -->

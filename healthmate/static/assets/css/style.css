@@ -3888,7 +3888,39 @@ html.menu-opened body {
 	font-size: 14px;
 	margin: 10px 10px 0 0;
 	padding: 6px 15px;
+	/* my styling*/
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
+/* slot-info and delete-btn by rai*/
+.slot-info {
+    flex-grow: 1; /* Allow this div to grow and take remaining space */
+}
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    width: 30px; /* Adjust the size as needed */
+    height: 30px; /* Adjust the size as needed */
+    border-radius: 50%;
+    position: relative;
+}
+.delete-btn::before,
+.delete-btn::after {
+    content: "";
+    position: absolute;
+    width: 2px; /* Adjust the width of the cross */
+    height: 15px; /* Adjust the height of the cross */
+    background-color: white; /* Adjust the color of the cross */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+.delete-btn::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
 .doc-slot-list a {
 	color: #e48784;
 	display: inline-block;

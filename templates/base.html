@@ -2,34 +2,41 @@
 
 <!DOCTYPE html> 
 <html lang="en">
-	
-<!-- doccure/  30 Nov 2019 04:11:34 GMT -->
-<head>
+
+    <head>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-		<title>Doccure</title>
-		
-		<!-- Favicons -->
-		<link type="image/x-icon" href="{% static 'assets/img/favicon.png' %}" rel="icon">
-		
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
-		
-		<!-- Fontawesome CSS -->
-		<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
-		<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
-		
-		<!-- Main CSS -->
-		<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-		
-		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-			<script src="assets/js/html5shiv.min.js"></script>
-			<script src="assets/js/respond.min.js"></script>
-		<![endif]-->
-	
-	</head>
+        <title>HealthMate</title>
+        
+        <!-- Favicons -->
+        <link type="image/x-icon" href="{% static 'assets/img/favicon.png' %}" rel="icon">
+        
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+        
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
+        
+        <!-- Datetimepicker CSS -->
+        <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datetimepicker.min.css' %}">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" href="{% static 'assets/plugins/select2/css/select2.min.css' %}">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+        <!-- Fancybox CSS -->
+        <link rel="stylesheet" href="{% static 'assets/plugins/fancybox/jquery.fancybox.min.css' %}">
+        
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="assets/js/html5shiv.min.js"></script>
+            <script src="assets/js/respond.min.js"></script>
+        <![endif]-->
+    </head>
 	<body>
 
         {% include 'includes/header.html' %}
@@ -37,22 +44,37 @@
         {% block content %}
         {% endblock %}
 
-        {% include 'includes/footer.html' %}
-    
-    <!-- jQuery -->
-    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
-    
-    <!-- Bootstrap Core JS -->
-    <script src="{% static 'assets/js/popper.min.js' %}"></script>
-    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-    
-    <!-- Slick JS -->
-    <script src="{% static 'assets/js/slick.js' %}"></script>
-    
-    <!-- Custom JS -->
-    <script src="{% static 'assets/js/script.js' %}"></script>
-    
+        <!-- jQuery -->
+        <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+        
+        <!-- Bootstrap Core JS -->
+        <script src="{% static 'assets/js/popper.min.js' %}"></script>
+        <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+        <!-- Datetimepicker JS -->
+        <script src="{% static 'assets/js/moment.min.js' %}"></script>
+        <script src="{% static 'assets/js/bootstrap-datetimepicker.min.js' %}"></script>
+        
+        <!-- Slick JS -->
+        <script src="{% static 'assets/js/slick.js' %}"></script>
+
+        <!-- Select2 JS -->
+        <script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
+
+        <!-- Fancybox JS -->
+        <script src="{% static 'assets/plugins/fancybox/jquery.fancybox.min.js' %}"></script>
+
+        <!-- Sticky Sidebar JS -->
+        <script src="{% static 'assets/plugins/theia-sticky-sidebar/ResizeSensor.js' %}"></script>
+        <script src="{% static 'assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js' %}"></script>
+        
+        <!-- Custom JS -->
+        <script src="{% static 'assets/js/script.js' %}"></script>
+        <script>
+            setTimeout(function(){
+                $('#mess').fadeOut('slow')
+            }, 4000)
+        </script>
     </body>
     
-    <!-- doccure/  30 Nov 2019 04:11:53 GMT -->
-    </html>
+</html>

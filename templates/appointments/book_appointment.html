@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Booking</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Booking</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+    <div class="container">
+    
+        <div class="row">
+            <div class="col-12">
+            
+                <div class="card">
+                    <div class="card-body">
+                        <div class="booking-doc-info">
+                            <a href="doctor-profile.html" class="booking-doc-img">
+                                <img src="{{single_doctor.user.profile_picture.url}}" alt="User Image">
+                            </a>
+                            <div class="booking-info">
+                                <h4><a href="doctor-profile.html">Dr. {{single_doctor.user.get_full_name}}</a></h4>
+                                <div class="rating">
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="d-inline-block average-rating">35</span>
+                                </div>
+                                <p class="text-muted mb-0"><i class="fas fa-map-marker-alt"></i> {{single_doctor.user.get_full_address}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Schedule Widget -->
+                <div class="card booking-schedule schedule-widget">
+                
+                    <!-- Schedule Header -->
+                    <div class="schedule-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                            
+                                <!-- Day Slot -->
+                                <div class="day-slot">
+                                    <ul>
+                                        <p>
+                                            {% for date in date_list %}
+                                            <li>
+                                                {{ date|date:"D, d M Y" }}
+                                            </li>                                           
+                                            {% endfor %}
+                                        </p>
+                                    </ul>
+                                </div>
+                                <!-- /Day Slot -->
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Schedule Header -->
+                    <script>
+                        function setSelectedValues() {
+                           // Get the selected date and timeslot
+                           var selectedDate = document.querySelector('input[name="slot"]:checked').value.split(',')[0];
+                           var selectedTimeslot = document.querySelector('input[name="slot"]:checked').value.split(',')[1];
+                  
+                           // Set the values in the hidden fields
+                           document.getElementById('selected_date').value = selectedDate;
+                           document.getElementById('selected_timeslot').value = selectedTimeslot;                          
+                        }
+                     </script>
+                    <!-- Schedule Content -->
+                    <div class="schedule-cont">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Time Slot Form -->
+                                <form method="POST" action="{{single_doctor.checkout_url}}">
+                                {% csrf_token %}
+                                <div class="time-slot">
+                                        <ul class="clearfix">
+                                            {% for date in date_list %}
+                                            <li>
+                                                {% for timeslot in timeslots %}
+                                                    {% if date|date:"D" == timeslot.day%}
+                                                    <div class="timing" href="#">
+                                                        <input type="radio" name="slot" id="time_slot_{{ date|date:'D' }}_{{ forloop.counter }}" value={{ date|date:'Y-m-d' }},{{ timeslot.start_time|date:'H:i' }} required>
+                                                        <label for="time_slot_{{ date|date:'D' }}_{{ forloop.counter }}">
+                                                        <span>{{timeslot.start_time}}</span>
+                                                        </label>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <a class="timing" href="#">
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>    
+                                </div>
+                                <br>
+                                <input type="hidden" name="selected_date" id="selected_date" value="">
+                                <input type="hidden" name="selected_timeslot" id="selected_timeslot" value="">
+                                
+                                <!-- /Time Slot Form -->                                
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Schedule Content -->
+                    
+                </div>
+                <!-- /Schedule Widget -->
+                
+                <!-- Submit Section -->
+                <div class="submit-section proceed-btn text-right">
+                                <button type="submit" onclick="setSelectedValues()" class="btn btn-primary submit-btn">Proceed to Pay</button>
+                                </form>
+                </div>
+                <!-- /Submit Section -->
+                
+            </div>
+        </div>
+    </div>
+
+</div>		
+<!-- /Page Content -->
+
+{% include 'includes/footer.html' %}
+{% endblock %}

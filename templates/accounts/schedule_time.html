@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Schedule Timings</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Schedule Timings</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+
+                {% include 'includes/doctor_sidebar.html' %}
+
+						
+            <div class="col-md-7 col-lg-8 col-xl-9">
+             
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="card-title">Schedule Timings</h4>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <a class="edit-link" data-toggle="modal" href="#add_time_slot"><i class="fa fa-plus-circle"></i> Add Slot</a>
+                                    </div>
+                                </div>
+                                <div class="profile-box">
+                                        
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card schedule-widget mb-0">
+                                            
+                                                <!-- Schedule Header -->
+                                                <div class="schedule-header">
+                                                    <!-- Schedule Nav -->
+                                                    <div class="schedule-nav">
+                                                        <ul class="nav nav-tabs nav-justified">
+                                                            {% for day, day_name in days_of_week %}
+                                                            <li class="nav-item">
+                                                                <a class="nav-link {% if forloop.first %}active{% endif %}" data-toggle="tab" href="#slot_{{ day }}">{{ day_name }}</a>
+                                                            </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                    <!-- /Schedule Nav -->
+                                                </div>
+                                                <!-- /Schedule Header -->
+                                                
+                                                <!-- Schedule Content -->
+                                                <div class="tab-content schedule-cont">
+                                                    {% for day, day_name in days_of_week %}
+                                                    <div id="slot_{{ day }}" class="tab-pane fade {% if forloop.first %}show active{% endif %}">
+                                                        <h4 class="card-title d-flex justify-content-between">
+                                                            <span>Time Slots</span>
+                                                        </h4>
+                                                        <!-- Slot List -->
+                                                        <div class="doc-times">
+                                                            {% for timeslot in timeslots %}
+                                                            {% if timeslot.day == day %}
+                                                            <div class="doc-slot-list">
+                                                                <div class="slot-info">
+                                                                    {{ timeslot.start_time }} - {{ timeslot.end_time }}
+                                                                </div>
+                                                                <form action="{% url 'delete_timeslot' timeslot.id %}" method="POST">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this schedule?')"></button>
+                                                                </form>
+                                                            </div>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </div>
+                                                        <!-- /Slot List -->
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <!-- /Schedule Content -->
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    
+            </div>
+        </div>
+
+    </div>
+</div>		
+<!-- /Page Content -->
+{% include 'includes/footer.html' %}
+<!-- Add Time Slot Modal -->
+		<div class="modal fade custom-modal" id="add_time_slot">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add Time Slots</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form action="{% url 'schedule_time'%}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="selected_day" id="selected_day" value="">
+							<div class="hours-info">
+								<div class="row form-row hours-cont">
+									<div class="col-12 col-md-10">
+                                        
+                                            <div class="form-group">
+                                                <label>Day</label>
+                                                <select class="form-control" name="selected_day">
+                                                    <option>-</option>
+                                                    <option value="Sun">Sunday</option>
+                                                    <option value="Mon">Monday</option>
+                                                    <option value="Tue">Tuesday</option>  
+                                                    <option value="Wed">Wednesday</option>
+                                                    <option value="Thu">Thursday</option>
+                                                    <option value="Fri">Friday</option>  
+                                                    <option value="Sat">Saturday</option>
+                                                </select>
+                                            </div>
+                                        
+										<div class="row form-row">
+											<div class="col-12 col-md-6">
+												<div class="form-group">
+													<label>Start Time</label>
+													<select class="form-control" name="start_time">
+														<option>-</option>
+                                                        <option value="00:00:00">12.00 am</option>
+                                                        <option value="00:30:00">12.30 am</option>
+                                                        <option value="01:00:00">1.00 am</option>
+                                                        <option value="01:30:00">1.30 am</option>
+                                                        <option value="02:00:00">2.00 am</option>
+                                                        <option value="02:30:00">2.30 am</option>
+                                                        <option value="03:00:00">3.00 am</option>
+                                                        <option value="03:30:00">3.30 am</option>
+                                                        <option value="04:00:00">4.00 am</option>
+                                                        <option value="04:30:00">4.30 am</option>
+                                                        <option value="05:00:00">5.00 am</option>
+                                                        <option value="05:30:00">5.30 am</option>
+                                                        <option value="06:00:00">6.00 am</option>
+                                                        <option value="06:30:00">6.30 am</option>
+                                                        <option value="07:00:00">7.00 am</option>
+                                                        <option value="07:30:00">7.30 am</option>
+                                                        <option value="08:00:00">8.00 am</option>
+                                                        <option value="08:30:00">8.30 am</option>
+                                                        <option value="09:00:00">9.00 am</option>
+                                                        <option value="09:30:00">9.30 am</option>
+                                                        <option value="10:00:00">10.00 am</option>
+                                                        <option value="10:30:00">10.30 am</option>
+                                                        <option value="11:00:00">11.00 am</option>
+                                                        <option value="11:30:00">11.30 am</option>
+                                                        <option value="12:00:00">12.00 pm</option>
+                                                        <option value="12:30:00">12.30 pm</option>
+                                                        <option value="13:00:00">1.00 pm</option>
+                                                        <option value="13:30:00">1.30 pm</option>
+                                                        <option value="14:00:00">2.00 pm</option>
+                                                        <option value="14:30:00">2.30 pm</option>
+                                                        <option value="15:00:00">3.00 pm</option>
+                                                        <option value="15:30:00">3.30 pm</option>
+                                                        <option value="16:00:00">4.00 pm</option>
+                                                        <option value="16:30:00">4.30 pm</option>
+                                                        <option value="17:00:00">5.00 pm</option>
+                                                        <option value="17:30:00">5.30 pm</option>
+                                                        <option value="18:00:00">6.00 pm</option>
+                                                        <option value="18:30:00">6.30 pm</option>
+                                                        <option value="19:00:00">7.00 pm</option>
+                                                        <option value="19:30:00">7.30 pm</option>
+                                                        <option value="20:00:00">8.00 pm</option>
+                                                        <option value="20:30:00">8.30 pm</option>
+                                                        <option value="21:00:00">9.00 pm</option>
+                                                        <option value="21:30:00">9.30 pm</option>
+                                                        <option value="22:00:00">10.00 pm</option>
+                                                        <option value="22:30:00">10.30 pm</option>
+                                                        <option value="23:00:00">11.00 pm</option>
+                                                        <option value="23:30:00">11.30 pm</option>
+													</select>
+												</div> 
+											</div>
+											<div class="col-12 col-md-6">
+												<div class="form-group">
+													<label>End Time</label>
+													<select class="form-control" name="end_time">
+														<option>-</option>
+                                                        <option value="00:30:00">12.30 am</option>
+                                                        <option value="01:00:00">1.00 am</option>
+                                                        <option value="01:30:00">1.30 am</option>
+                                                        <option value="02:00:00">2.00 am</option>
+                                                        <option value="02:30:00">2.30 am</option>
+                                                        <option value="03:00:00">3.00 am</option>
+                                                        <option value="03:30:00">3.30 am</option>
+                                                        <option value="04:00:00">4.00 am</option>
+                                                        <option value="04:30:00">4.30 am</option>
+                                                        <option value="05:00:00">5.00 am</option>
+                                                        <option value="05:30:00">5.30 am</option>
+                                                        <option value="06:00:00">6.00 am</option>
+                                                        <option value="06:30:00">6.30 am</option>
+                                                        <option value="07:00:00">7.00 am</option>
+                                                        <option value="07:30:00">7.30 am</option>
+                                                        <option value="08:00:00">8.00 am</option>
+                                                        <option value="08:30:00">8.30 am</option>
+                                                        <option value="09:00:00">9.00 am</option>
+                                                        <option value="09:30:00">9.30 am</option>
+                                                        <option value="10:00:00">10.00 am</option>
+                                                        <option value="10:30:00">10.30 am</option>
+                                                        <option value="11:00:00">11.00 am</option>
+                                                        <option value="11:30:00">11.30 am</option>
+                                                        <option value="12:00:00">12.00 pm</option>
+                                                        <option value="12:30:00">12.30 pm</option>
+                                                        <option value="13:00:00">1.00 pm</option>
+                                                        <option value="13:30:00">1.30 pm</option>
+                                                        <option value="14:00:00">2.00 pm</option>
+                                                        <option value="14:30:00">2.30 pm</option>
+                                                        <option value="15:00:00">3.00 pm</option>
+                                                        <option value="15:30:00">3.30 pm</option>
+                                                        <option value="16:00:00">4.00 pm</option>
+                                                        <option value="16:30:00">4.30 pm</option>
+                                                        <option value="17:00:00">5.00 pm</option>
+                                                        <option value="17:30:00">5.30 pm</option>
+                                                        <option value="18:00:00">6.00 pm</option>
+                                                        <option value="18:30:00">6.30 pm</option>
+                                                        <option value="19:00:00">7.00 pm</option>
+                                                        <option value="19:30:00">7.30 pm</option>
+                                                        <option value="20:00:00">8.00 pm</option>
+                                                        <option value="20:30:00">8.30 pm</option>
+                                                        <option value="21:00:00">9.00 pm</option>
+                                                        <option value="21:30:00">9.30 pm</option>
+                                                        <option value="22:00:00">10.00 pm</option>
+                                                        <option value="22:30:00">10.30 pm</option>
+                                                        <option value="23:00:00">11.00 pm</option>
+                                                        <option value="23:30:00">11.30 pm</option>
+                                                        <option value="00:00:00">12.00 am</option>
+													</select>
+												</div> 
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="submit-section text-center">
+								<button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Add Time Slot Modal -->
+{% endblock %}
