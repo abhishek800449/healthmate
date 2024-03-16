@@ -184,5 +184,26 @@
     {% include 'medical/add_medical_record.html' %}
 </div>
 <!-- /Add Medical Records Modal -->
+<div class="modal fade custom-modal" id="view_file">
+    {% include 'medical/view_file.html' %}
+</div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const viewFileModal = document.getElementById('view_file');
+        const viewFileEmbed = document.getElementById('view-file-embed');
+        
+        const viewFileLinks = document.querySelectorAll('.view-file-link');
+        viewFileLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const medicalId = this.getAttribute('data-id');
+                const embedSrc = "{% url 'view_file' 0 %}".replace("0", medicalId);
+                viewFileEmbed.setAttribute('src', embedSrc);
+                // Show the modal
+                $(viewFileModal).modal('show');
+            });
+        });
+    });
+</script>
 {% endblock %}

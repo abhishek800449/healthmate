@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from appointment.models import TimeSlot
 from django.utils import timezone
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
 import re
 
 # Create your views here.
@@ -216,6 +217,7 @@ def view_patient(request, patient_username=None):
     patient = User.objects.get(username=patient_username)
     patientprofile = PatientProfile.objects.get(user=patient)
     doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
+    medicals = MedicalRecord.objects.filter(patient=patientprofile)
     form = MedicalRecordForm()
     try:
         appointments = Appointment.objects.filter(patient=patientprofile, doctor=doctorprofile).order_by('date', 'time')
@@ -225,6 +227,7 @@ def view_patient(request, patient_username=None):
         'patientprofile': patientprofile,
         'appointments': appointments,
         'form': form,
+        'medicals': medicals,
     }
     return render(request, 'accounts/view_patient.html', context)
 
@@ -264,22 +267,33 @@ def change_password(request):
 def save_record(request):
     if request.method == 'POST':
         form = MedicalRecordForm(request.POST, request.FILES)
+        user = request.user
         if form.is_valid():
             patient_id = request.POST['patient_id']
             patient = PatientProfile.objects.get(id=patient_id)
+            if user.is_staff:
+                creator = DoctorProfile.objects.get(user=user)
+            else:
+                creator = None
             medical_record = MedicalRecord(
                 patient=patient,
                 title=form.cleaned_data['title'],
                 description=form.cleaned_data['description'],
                 file_path=form.cleaned_data['file_path'],
-                created_by=request.user
+                created_by=creator
             )
             medical_record.save()
             messages.success(request, 'Medical record saved successfully.')
-            return redirect('patient_dashboard')
+            if user.is_staff:
+                return redirect('view_patient', patient_username=patient.user.username)
+            else:
+                return redirect('patient_dashboard')
         else:
             messages.error(request, 'Invalid form data. Please check the fields.')
-            return redirect('patient_dashboard')
+            if user.is_staff:
+                return redirect('doctor_dashboard')
+            else:
+                return redirect('patient_dashboard')
     else:
         return redirect('patient_dashboard')
 
@@ -296,3 +310,17 @@ def delete_post(request):
         except:
            resp['msg'] = "Undefined Post ID"
     return HttpResponse(json.dumps(resp),content_type="application/json")
+
+
+@login_required
+def view_file(request, id):
+    medical = get_object_or_404(MedicalRecord, id=id)
+    print("inside view!!!!!!!!!!!!!!!!!!!")
+    with open(medical.file_path.path, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/pdf')
+        print("opened!!!!!!!!!!!!!!!!!!!")
+    return response
+    context ={  
+        'medical': medical,
+    }
+    return render(request, 'medical/view_file.html', context)

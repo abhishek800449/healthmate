@@ -16,6 +16,7 @@ urlpatterns = [
     path('view_patient/<str:patient_username>/', views.view_patient, name='view_patient'),
     path('change_password/', views.change_password, name='change_password'),
     path('save_record/', views.save_record, name='save_record'),
+    path('view_file/<int:id>/', views.view_file, name='view_file'),
     #path('dashboard/', views.dashboard, name='dashboard'),
     #path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     #path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
