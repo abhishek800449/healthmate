@@ -111,6 +111,20 @@ def patient_dashboard(request):
     return render(request, 'accounts/patient_dashboard.html', context)
 
 
+@login_required(login_url='login')
+def my_appointments(request):
+    patientprofile = PatientProfile.objects.get(user_id=request.user.id)
+    try:
+        appointments = Appointment.objects.filter(patient=patientprofile)       
+    except (Appointment.DoesNotExist):
+        appointments = None
+    context = {
+        'patientprofile': patientprofile,
+        'appointments': appointments,
+    }
+    return render(request, 'accounts/my_appointments.html', context)
+
+
 # to edit patient profile
 @login_required(login_url='login')
 def patient_profile(request):
@@ -263,6 +277,37 @@ def change_password(request):
     return render(request, 'accounts/change_password.html')
 
 
+@login_required(login_url='login')
+def change_doctor_password(request):
+    if request.method == 'POST':
+        current_password = request.POST['current_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+
+        user = User.objects.get(username__exact=request.user.username)
+
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                '''
+                if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$', new_password):
+                    messages.error(request, "Password should be at least 8 characters and contain a combination of uppercase, lowercase, digits, and special symbols!")
+                    return redirect('change_doctor_password')
+                    '''
+                user.set_password(new_password)
+                user.save()
+                # auth.logout(request)
+                messages.success(request, 'Password updated successfully.')
+                return redirect('change_doctor_password')
+            else:
+                messages.error(request, 'Please enter valid current password')
+                return redirect('change_doctor_password')
+        else:
+            messages.error(request, 'Password does not match!')
+            return redirect('change_doctor_password')
+    return render(request, 'accounts/change_doctor_password.html')
+
+
 @login_required
 def save_record(request):
     if request.method == 'POST':
@@ -314,12 +359,6 @@ def delete_record(request, medical_id):
 @login_required
 def view_file(request, id):
     medical = get_object_or_404(MedicalRecord, id=id)
-    print("inside view!!!!!!!!!!!!!!!!!!!")
     with open(medical.file_path.path, 'rb') as f:
         response = HttpResponse(f.read(), content_type='application/pdf')
-        print("opened!!!!!!!!!!!!!!!!!!!")
     return response
-    context ={  
-        'medical': medical,
-    }
-    return render(request, 'medical/view_file.html', context)

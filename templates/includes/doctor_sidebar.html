@@ -73,14 +73,14 @@
                             <span>Social Media</span>
                         </a>
                     </li>
-                    <li class="{% if '/accounts/change_password/' == request.path %}active{% endif %}">
-                        <a href="{% url 'change_password' %}">
+                    <li class="{% if '/accounts/change_doctor_password/' == request.path %}active{% endif %}">
+                        <a href="{% url 'change_doctor_password' %}">
                             <i class="fas fa-lock"></i>
                             <span>Change Password</span>
                         </a>
                     </li>
                     <li>
-                        <a href="index-2.html">
+                        <a href="{% url 'logout' %}">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Logout</span>
                         </a>

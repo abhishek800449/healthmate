@@ -1,58 +1,97 @@
-<div class="card card-table mb-0">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover table-center mb-0">
-                <thead>
-                    <tr>
-                        <th>Doctor</th>
-                        <th>Appt Date</th>
-                        <th>Booking Date</th>
-                        <th>Amount</th>
-                        <th>Follow Up</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for appointment in appointments%}
-                    <tr>
-                        <td>
-                            <h2 class="table-avatar">
-                                <a href="{{appointment.doctor.get_url}}" class="avatar avatar-sm mr-2">
-                                    <img class="avatar-img rounded-circle" src="{{appointment.doctor.user.profile_picture.url}}" alt="User">
-                                </a>
-                                <a href="{{appointment.doctor.get_url}}">Dr. {{appointment.doctor.user.get_full_name}}
-                                    <span>{{appointment.doctor.specialization}}</span>
-                                </a>
-                            </h2>
-                        </td>
-                        <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            {% if appointment.status == 'confirmed' %}
-                                <span class="badge badge-pill bg-success-light">{{ appointment.status }}</span>
-                            {% elif appointment.status == 'pending' %}
-                                <span class="badge badge-pill bg-warning-light">{{ appointment.status }}</span>
-                            {% elif appointment.status == 'cancelled' %}
-                                <span class="badge badge-pill bg-danger-light">{{ appointment.status }}</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-right">
-                            <div class="table-action">
-                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
-                                    <i class="fas fa-print"></i> Print
-                                </a>
-                                <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-                                    <i class="far fa-eye"></i> View
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Dashboard</h2>
+            </div>
         </div>
     </div>
 </div>
+<!-- /Breadcrumb -->
+<!-- Page Content -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">            
+            {% include 'includes/patient_sidebar.html' %}
+            <div class="col-md-7 col-lg-8 col-xl-9">
+            <div class="row">
+                {% include 'includes/alerts.html' %}
+                <div class="col-md-12"><h2 class="mb-4">My Appoinments</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Appt Date</th>
+                                    <th>Booking Date</th>
+                                    <th>Amount</th>
+                                    <th>Follow Up</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in appointments%}
+                                <tr>
+                                    <td>
+                                        <h2 class="table-avatar">
+                                            <a href="{{appointment.doctor.get_url}}" class="avatar avatar-sm mr-2">
+                                                <img class="avatar-img rounded-circle" src="{{appointment.doctor.user.profile_picture.url}}" alt="User">
+                                            </a>
+                                            <a href="{{appointment.doctor.get_url}}">Dr. {{appointment.doctor.user.get_full_name}}
+                                                <span>{{appointment.doctor.specialization}}</span>
+                                            </a>
+                                        </h2>
+                                    </td>
+                                    <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        {% if appointment.status == 'confirmed' %}
+                                            <span class="badge badge-pill bg-success-light">{{ appointment.status }}</span>
+                                        {% elif appointment.status == 'pending' %}
+                                            <span class="badge badge-pill bg-warning-light">{{ appointment.status }}</span>
+                                        {% elif appointment.status == 'cancelled' %}
+                                            <span class="badge badge-pill bg-danger-light">{{ appointment.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="table-action">
+                                            <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
+                                                <i class="fas fa-print"></i> Print
+                                            </a>
+                                            <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                                                <i class="far fa-eye"></i> View
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'includes/footer.html' %}
+{% endblock %}

@@ -24,6 +24,12 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
+                    <li class="{% if '/accounts/my_appointments/' == request.path %}active{% endif %}">
+                        <a href="{% url 'my_appointments' %}">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
                     <li class="{% if '/accounts/patient_profile/' == request.path %}active{% endif %}">
                         <a href="{% url 'patient_profile' %}">
                             <i class="fas fa-user-cog"></i>
