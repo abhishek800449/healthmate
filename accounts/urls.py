@@ -17,6 +17,7 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     path('save_record/', views.save_record, name='save_record'),
     path('view_file/<int:id>/', views.view_file, name='view_file'),
+    path('delete_record/<int:medical_id>/', views.delete_record, name='delete_record'),
     #path('dashboard/', views.dashboard, name='dashboard'),
     #path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     #path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
@@ -28,7 +29,6 @@ urlpatterns = [
     #path('change_password/', views.change_password, name='change_password'),
     #path('order_detail/<int:order_id>/', views.order_detail, name='order_detail'),
     #path('billing_address/', views.billing_address, name='billing_address'),
-    #path('delete_billing_address/<int:address_id>/', views.delete_billing_address, name='delete_billing_address'),
     #path('ajax/get_states/', views.get_states, name='get_states'),
     #path('ajax/get_cities/', views.get_cities, name='get_cities'),
 ]

@@ -298,18 +298,17 @@ def save_record(request):
         return redirect('patient_dashboard')
 
 
-@login_required
-def delete_post(request):
-    resp = {'status':'failed', 'msg':''}
+@login_required(login_url='login')
+def delete_record(request, medical_id):
+    user = request.user
+    medical = get_object_or_404(MedicalRecord, id=medical_id)
+    patient = medical.patient
     if request.method == 'POST':
-        try:
-            post = Post.objects.get(id = request.POST['id'])
-            post.delete()
-            resp['status'] = 'success'
-            messages.success(request, 'Post has been deleted successfully')
-        except:
-           resp['msg'] = "Undefined Post ID"
-    return HttpResponse(json.dumps(resp),content_type="application/json")
+        medical.delete()
+        messages.success(request, 'Medical record has been deleted.')
+    if is_doctor(user):
+        return redirect('view_patient', patient_username=patient.user.username)
+    return redirect('patient_dashboard')
 
 
 @login_required
