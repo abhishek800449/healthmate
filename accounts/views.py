@@ -158,17 +158,13 @@ def patient_profile(request):
 @user_passes_test(is_doctor)
 def doctor_dashboard(request):
     doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
-    today = timezone.now().date()
     try:
         appointments = Appointment.objects.filter(doctor=doctorprofile).order_by('date', 'time')
-        todays_appointments = appointments.filter(date=today)
     except Appointment.DoesNotExist:
         appointments = None
-        todays_appointments = None
     context = {
         'doctorprofile': doctorprofile,
         'appointments': appointments,
-        'todays_appointments': todays_appointments,
     }
     return render(request, 'accounts/doctor_dashboard.html', context)
 
@@ -384,3 +380,24 @@ def get_cities(request):
         city_list = [{'id': city.id, 'name': city.name} for city in cities]
         return JsonResponse({'cities': city_list})
     return JsonResponse({'error': 'Invalid state ID'})
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def accept(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    if request.method == 'POST':
+        appointment.status = 'confirmed'
+        appointment.save()
+        messages.success(request, 'Appointment accepted.')
+    return redirect('doctor_dashboard')
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def cancel(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    if request.method == 'POST':
+        appointment.status = 'cancelled'
+        appointment.save()
+        messages.success(request, 'Appointment cancelled.')
+    return redirect('doctor_dashboard')

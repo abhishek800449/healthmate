@@ -90,18 +90,21 @@
                             <!-- Appointment Tab -->
                             <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="#upcoming-appointments" data-toggle="tab">Upcoming</a>
+                                    <a class="nav-link active" href="#pending-appointments" data-toggle="tab">Pending</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#today-appointments" data-toggle="tab">Today</a>
+                                    <a class="nav-link" href="#confirmed-appointments" data-toggle="tab">Confirmed</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#cancelled-appointments" data-toggle="tab">Cancelled</a>
                                 </li> 
                             </ul>
                             <!-- /Appointment Tab -->
                             
                             <div class="tab-content">
                             
-                                <!-- Upcoming Appointment Tab -->
-                                <div class="tab-pane show active" id="upcoming-appointments">
+                                <!-- Pending Appointment Tab -->
+                                <div class="tab-pane show active" id="pending-appointments">
                                     <div class="card card-table mb-0">
                                         <div class="card-body">
                                             <div class="table-responsive">
@@ -118,6 +121,7 @@
                                                     </thead>
                                                     <tbody>
                                                         {% for appointment in appointments%}
+                                                        {% if appointment.status == 'pending' %}
                                                         <tr>
                                                             <td>
                                                                 <h2 class="table-avatar">
@@ -130,20 +134,27 @@
                                                             <td>New Patient</td>
                                                             <td class="text-center">$150</td>
                                                             <td class="text-right">
-                                                                <div class="table-action">
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                                                                <div class="table-action d-flex align-items-center justify-content-end">
+                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-info-light mr-1">
                                                                         <i class="far fa-eye"></i> View
                                                                     </a>
-                                                                    
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
+                                                                    <form action="{% url 'accept' appointment.id %}" method="POST">
+                                                                        {% csrf_token %}
+                                                                        <button type="submit" class="btn btn-sm bg-success-light mr-1">
                                                                         <i class="fas fa-check"></i> Accept
-                                                                    </a>
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+                                                                        </button>
+                                                                    </form>
+                                                                    <form action="{% url 'cancel' appointment.id %}" method="POST">
+                                                                        {% csrf_token %}
+                                                                        <button type="submit" class="btn btn-sm bg-danger-light mr-1">
                                                                         <i class="fas fa-times"></i> Cancel
+                                                                        </button>
+                                                                    </form>
                                                                     </a>
                                                                 </div>
                                                             </td>
                                                         </tr>
+                                                        {% endif %}
                                                         {% endfor %}
                                                     </tbody>
                                                 </table>		
@@ -151,10 +162,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- /Upcoming Appointment Tab -->
+                                <!-- /Pending Appointment Tab -->
                            
-                                <!-- Today Appointment Tab -->
-                                <div class="tab-pane" id="today-appointments">
+                                <!-- Confirmed Appointment Tab -->
+                                <div class="tab-pane" id="confirmed-appointments">
                                     <div class="card card-table mb-0">
                                         <div class="card-body">
                                             <div class="table-responsive">
@@ -170,33 +181,29 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {% for today in todays_appointments%}
+                                                        {% for appointment in appointments%}
+                                                        {% if appointment.status == 'confirmed' %}
                                                         <tr>
                                                             <td>
                                                                 <h2 class="table-avatar">
-                                                                    <a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{today.patient.user.profile_picture.url}}" alt="User Image"></a>
-                                                                    <a href="patient-profile.html">{{today.patient.user.get_full_name}}<span>#PT0006</span></a>
+                                                                    <a href="{{appointment.patient.get_url}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{appointment.patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                                    <a href="{{appointment.patient.get_url}}">{{appointment.patient.user.get_full_name}}<span>#PT0016</span></a>
                                                                 </h2>
                                                             </td>
-                                                            <td>{{today.date}}<span class="d-block text-info">{{today.time}}</span></td>
-                                                            <td>Fever</td>
-                                                            <td>Old Patient</td>
-                                                            <td class="text-center">$300</td>
+                                                            <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
+                                                            <td>General</td>
+                                                            <td>New Patient</td>
+                                                            <td class="text-center">$150</td>
                                                             <td class="text-right">
-                                                                <div class="table-action">
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                                                                <div class="table-action d-flex align-items-center justify-content-end">
+                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-info-light mr-1">
                                                                         <i class="far fa-eye"></i> View
                                                                     </a>
-                                                                    
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-                                                                        <i class="fas fa-check"></i> Accept
-                                                                    </a>
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-                                                                        <i class="fas fa-times"></i> Cancel
                                                                     </a>
                                                                 </div>
                                                             </td>
                                                         </tr>
+                                                        {% endif %}
                                                         {% endfor %}
                                                     </tbody>
                                                 </table>		
@@ -204,7 +211,56 @@
                                         </div>	
                                     </div>	
                                 </div>
-                                <!-- /Today Appointment Tab -->
+                                <!-- /Confirmed Appointment Tab -->
+
+                                <!-- Cancelled Appointment Tab -->
+                                <div class="tab-pane" id="cancelled-appointments">
+                                    <div class="card card-table mb-0">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-center mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Patient Name</th>
+                                                            <th>Appt Date</th>
+                                                            <th>Purpose</th>
+                                                            <th>Type</th>
+                                                            <th class="text-center">Paid Amount</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for appointment in appointments%}
+                                                        {% if appointment.status == 'cancelled' %}
+                                                        <tr>
+                                                            <td>
+                                                                <h2 class="table-avatar">
+                                                                    <a href="{{appointment.patient.get_url}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{appointment.patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                                    <a href="{{appointment.patient.get_url}}">{{appointment.patient.user.get_full_name}}<span>#PT0016</span></a>
+                                                                </h2>
+                                                            </td>
+                                                            <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
+                                                            <td>General</td>
+                                                            <td>New Patient</td>
+                                                            <td class="text-center">$150</td>
+                                                            <td class="text-right">
+                                                                <div class="table-action d-flex align-items-center justify-content-end">
+                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light mr-1">
+                                                                        <i class="far fa-edit"></i> Add Reason
+                                                                    </a>
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>		
+                                            </div>	
+                                        </div>	
+                                    </div>	
+                                </div>
+                                <!-- /Cancelled Appointment Tab -->
                                 
                             </div>
                         </div>
