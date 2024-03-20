@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, DoctorProfile, PatientProfile, Specialization, MedicalRecord
+from .models import User, DoctorProfile, PatientProfile, Specialization, MedicalRecord, Country, State, City
 # Register your models here.
 
 class SpecializationAdmin(admin.ModelAdmin):
@@ -18,5 +18,8 @@ admin.site.register(DoctorProfile, DoctorAdmin)
 admin.site.register(PatientProfile)
 admin.site.register(Specialization, SpecializationAdmin)
 admin.site.register(MedicalRecord, MedicalRecordAdmin)
+admin.site.register(Country)
+admin.site.register(State)
+admin.site.register(City)
 
 

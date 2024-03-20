@@ -29,6 +29,7 @@
             
             <div class="col-md-7 col-lg-8 col-xl-9">
                 <div class="card">
+                    {% include 'includes/alerts.html' %}
                     <div class="card-body">
                         
                         <!-- Profile Settings Form -->
@@ -42,9 +43,8 @@
                                                 <img src="{{user.profile_picture.url}}" alt="User Image">
                                             </div>
                                             <div class="upload-img">
-                                                <div class="change-photo-btn">
-                                                    <span><i class="fa fa-upload"></i> Upload Photo</span>
-                                                    {{profile_form.profile_picture}}
+                                                <div>
+                                                    {{user_form.profile_picture}}
                                                 </div>
                                                 <small class="form-text text-muted">Allowed JPG, GIF or PNG. Max size of 2MB</small>
                                             </div>
@@ -74,16 +74,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
                                         <label>Blood Group</label>
-                                        <select class="form-control select">
-                                            <option>A-</option>
-                                            <option>A+</option>
-                                            <option>B-</option>
-                                            <option>B+</option>
-                                            <option>AB-</option>
-                                            <option>AB+</option>
-                                            <option>O-</option>
-                                            <option>O+</option>
-                                        </select>
+                                        {{profile_form.blood_group}}
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -95,29 +86,25 @@
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
                                         <label>Gender</label>
-                                        <select class="form-control select">
-                                            <option>Male</option>
-                                            <option>Female</option>
-                                            <option>Others</option>
-                                        </select>
+                                        {{user_form.gender}}
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                     <label>Address</label>
-                                        <input type="text" class="form-control">
+                                    {{user_form.address_line_1}}
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4">
                                     <div class="form-group">
                                         <label>Country</label>
-                                        <input type="text" class="form-control">
+                                        {{user_form.country}}
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4">
                                     <div class="form-group">
                                         <label>State</label>
-                                        <input type="text" class="form-control">
+                                        {{user_form.state}}
                                     </div>
                                 </div>
                                 <!--
@@ -131,10 +118,12 @@
                                 <div class="col-12 col-md-4">
                                     <div class="form-group">
                                         <label>City</label>
-                                        <input type="text" class="form-control">
+                                        {{user_form.city}}
                                     </div>
                                 </div>
                             </div>
+                            {{ user_form.errors }}
+                            {{ profile_form.errors }}
                             <div class="submit-section">
                                 <button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
                             </div>
@@ -150,4 +139,53 @@
 </div>		
 <!-- /Page Content -->
 {% include 'includes/footer.html' %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#id_country').change(function () {  // Change to match the actual ID of your country select input
+            var countryId = $(this).val();
+            $.ajax({
+                url: '{% url "get_states" %}',
+                data: { 'country_id': countryId },
+                dataType: 'json',
+                success: function (data) {
+                    var stateSelect = $('#id_state');  // Change to match the actual ID of your state select input
+                    stateSelect.empty();
+                    $.each(data.states, function (key, value) {
+                        stateSelect.append($('<option></option>').attr('value', value.id).text(value.name));
+                    });
+                    // Trigger state change to populate cities if needed
+                    stateSelect.trigger('change');
+                }
+            });
+        });
+        $('#id_state').change(function () {  // Change to match the actual ID of your state select input
+            var stateId = $(this).val();
+            $.ajax({
+                url: '{% url "get_cities" %}',
+                data: { 'state_id': stateId },
+                dataType: 'json',
+                success: function (data) {
+                    var citySelect = $('#id_city');  // Change to match the actual ID of your city select input
+                    citySelect.empty();
+                    $.each(data.cities, function (key, value) {
+                        citySelect.append($('<option></option>').attr('value', value.id).text(value.name));
+                    });
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggleButton = document.getElementById('billing-address-toggle');
+      const form = document.getElementById('billing-address-form');
+      const addresses = document.getElementById('billing-addresses');
+  
+      toggleButton.addEventListener('click', function () {
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        addresses.style.display = addresses.style.display === 'none' ? 'block' : 'none';
+      });
+    });
+  </script>
 {% endblock %}

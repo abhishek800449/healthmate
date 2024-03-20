@@ -42,15 +42,18 @@ class RegistrationForm(forms.ModelForm):
 
 
 class UserForm(forms.ModelForm):
+    profile_picture = forms.ImageField(required=False, error_messages = {'invalid':("Image files only")}, widget=forms.FileInput)
+    dob = forms.DateField(required=False, widget=forms.DateInput)
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'phone_number', 'dob', 'gender', 'address_line_1', 'city', 'state', 'country')
+        fields = ('first_name', 'last_name', 'phone_number', 'dob', 'gender', 'profile_picture', 'address_line_1', 'city', 'state', 'country')
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
         self.fields['dob'].widget.attrs['class'] = 'form-control datetimepicker'
+        self.fields['profile_picture'].widget.attrs['class'] = 'upload'
         # Adjust foreign key fields
         self.fields['country'].queryset = Country.objects.all()
         self.fields['state'].queryset = State.objects.none()  # Initially no states
@@ -86,15 +89,13 @@ class UserForm(forms.ModelForm):
 
 
 class PatientProfileForm(forms.ModelForm):
-    profile_picture = forms.ImageField(required=False, error_messages = {'invalid':("Image files only")}, widget=forms.FileInput)
     class Meta:
         model = PatientProfile
-        fields = ('profile_picture','blood_group')
+        fields = ('blood_group',)
 
     def __init__(self, *args, **kwargs):
         super(PatientProfileForm, self).__init__(*args, **kwargs)
         self.fields['blood_group'].widget.attrs['class'] = 'form-control'
-        self.fields['profile_picture'].widget.attrs['class'] = 'upload'
 
         
 class MedicalRecordForm(forms.ModelForm):

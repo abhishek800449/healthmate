@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, UserForm, PatientProfileForm, MedicalRecordForm
-from .models import User, PatientProfile, DoctorProfile, MedicalRecord
+from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City
 from appointment.models import Appointment
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from appointment.models import TimeSlot
 from django.utils import timezone
 from django.contrib.auth.decorators import user_passes_test
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import re
 
 # Create your views here.
@@ -129,14 +129,19 @@ def my_appointments(request):
 @login_required(login_url='login')
 def patient_profile(request):
     patientprofile = get_object_or_404(PatientProfile, user=request.user)
+    countries = Country.objects.all()
     if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
+        print(request.POST)
+        user_form = UserForm(request.POST, request.FILES, instance=request.user)
         profile_form = PatientProfileForm(request.POST, request.FILES, instance=patientprofile)
         if user_form.is_valid() and profile_form.is_valid():
+            print("it is valid!!!!!!!")
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile has been updated.')
-            return redirect('edit_profile')
+            return redirect('patient_profile')
+        else:
+            print("It is invalid!!!")
     else:
         user_form = UserForm(instance=request.user)
         profile_form = PatientProfileForm(instance=patientprofile)
@@ -144,6 +149,7 @@ def patient_profile(request):
         'user_form': user_form,
         'profile_form': profile_form,
         'patientprofile': patientprofile,
+        'countries': countries,
     }
     return render(request, 'accounts/patient_profile.html', context)
 
@@ -362,3 +368,19 @@ def view_file(request, id):
     with open(medical.file_path.path, 'rb') as f:
         response = HttpResponse(f.read(), content_type='application/pdf')
     return response
+
+def get_states(request):
+    country_id = request.GET.get('country_id')
+    if country_id:
+        states = State.objects.filter(country_id=country_id)
+        state_list = [{'id': state.id, 'name': state.name} for state in states]
+        return JsonResponse({'states': state_list})
+    return JsonResponse({'error': 'Invalid country ID'})
+
+def get_cities(request):
+    state_id = request.GET.get('state_id')
+    if state_id:
+        cities = City.objects.filter(state_id=state_id)
+        city_list = [{'id': city.id, 'name': city.name} for city in cities]
+        return JsonResponse({'cities': city_list})
+    return JsonResponse({'error': 'Invalid state ID'})
