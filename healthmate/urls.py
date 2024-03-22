@@ -25,6 +25,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('accounts/', include('accounts.urls')),
     path('appointment/', include('appointment.urls')),
+    path('consult/', include('videoapp.urls')),
 ]
 
 if settings.DEBUG:

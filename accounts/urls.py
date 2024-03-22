@@ -24,7 +24,7 @@ urlpatterns = [
     path('ajax/get_cities/', views.get_cities, name='get_cities'),
     path('accept/<int:appointment_id>/', views.accept, name='accept'),
     path('cancel/<int:appointment_id>/', views.cancel, name='cancel'),
-    #path('dashboard/', views.dashboard, name='dashboard'),
+    path('view_rooms/', views.view_rooms, name='view_rooms'),
     #path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     #path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
     #path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate, name='resetpassword_validate'),
@@ -34,7 +34,4 @@ urlpatterns = [
     #path('edit_profile/', views.edit_profile, name='edit_profile'),
     #path('change_password/', views.change_password, name='change_password'),
     #path('order_detail/<int:order_id>/', views.order_detail, name='order_detail'),
-    #path('billing_address/', views.billing_address, name='billing_address'),
-    #path('ajax/get_states/', views.get_states, name='get_states'),
-    #path('ajax/get_cities/', views.get_cities, name='get_cities'),
 ]

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, UserForm, PatientProfileForm, MedicalRecordForm
 from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City
 from appointment.models import Appointment
+from videoapp.models import RoomDetails
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from appointment.models import TimeSlot
@@ -401,3 +402,15 @@ def cancel(request, appointment_id):
         appointment.save()
         messages.success(request, 'Appointment cancelled.')
     return redirect('doctor_dashboard')
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def view_rooms(request):
+    doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
+    rooms = RoomDetails.objects.filter(specialization=doctorprofile.specialization)
+    context = {
+        'doctorprofile': doctorprofile,
+        'rooms': rooms,
+    }
+    return render(request, 'accounts/view_rooms.html', context)

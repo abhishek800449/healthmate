@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Online consultation</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Online consultation</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">      
+            {% include 'includes/doctor_sidebar.html' %}     
+            <div class="col-md-7 col-lg-8 col-xl-9">
+                <div class="appointments">
+                {% for room in rooms %}
+                    <!-- Appointment List -->
+                    <div class="appointment-list">
+                        <div class="profile-info-widget">
+                            <a href="{{room.patient.get_url}}" class="booking-doc-img">
+                                <img src="{{room.patient.user.profile_picture.url}}" alt="User Image">
+                            </a>
+                            <div class="profile-det-info">
+                                <h3><a href="{{room.patient.get_url}}">{{room.patient.user.get_full_name}}</a></h3>
+                                <div class="patient-details">
+                                    <h5><i class="far fa-clock"></i>{{room.date}}, {{room.time}}</h5>
+                                    <h5><i class="fas fa-map-marker-alt"></i>{{room.patient.user.get_full_address}}</h5>
+                                    <h5><i class="fas fa-envelope"></i>{{room.patient.user.email}}</h5>
+                                    <h5 class="mb-0"><i class="fas fa-phone"></i>{{room.patient.user.phone_number}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="appointment-action">
+                            <form action="{% url 'join_room' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{room.patient.user.username}}" name="roomID"></input>
+                                <button type="submit" class="btn btn-sm bg-success-light mr-1">
+                                <i class="fas fa-check"></i> Accept
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /Appointment List -->
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>		
+<!-- /Page Content -->
+
+{% include 'includes/footer.html' %}
+{% endblock %}

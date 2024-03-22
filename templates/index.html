@@ -37,7 +37,7 @@
 	<section class="section section-specialities">
 		<div class="container-fluid">
 			<div class="section-header text-center">
-				<h2>Clinic and Specialities</h2>
+				<h2>Instant Video Consultataion</h2>
 				<p class="sub-title">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 			</div>
 			<div class="row justify-content-center">
@@ -47,12 +47,20 @@
 					
 						{% for specialization in specializations %}
 						<!-- Slider Item -->
-						<div class="speicality-item text-center">
-							<div class="speicality-img">
-								<img src="{% static 'assets/img/specialities/specialities-01.png' %}" class="img-fluid" alt="Speciality">
-								<span><i class="fa fa-circle" aria-hidden="true"></i></span>
+						<div class="card speicality-item text-center">
+							<div class="card-body">
+								<a href={{specialization.get_url}}>
+									<div class="speicality-img">
+										<img src="{{specialization.image.url}}" class="img-fluid" alt="Speciality">
+										<span><i class="fa fa-circle" aria-hidden="true"></i></span>
+									</div>
+								</a>
+								<p>{{specialization.name}}<br>
+									<a href={% url 'book_consultation' specialization.slug %}>
+										<span class="doc-department">Consult now ></span>
+									</a>
+								</p>
 							</div>
-							<p>{{specialization.name}}</p>
 						</div>	
 						<!-- /Slider Item -->
 						{% endfor %}

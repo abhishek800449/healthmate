@@ -137,6 +137,7 @@ class User(AbstractBaseUser):
 class Specialization(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True, null=True)
+    image = models.ImageField(blank=True, upload_to='specialization')
     def __str__(self):
         return self.name
     def get_url(self):

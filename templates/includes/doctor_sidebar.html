@@ -24,6 +24,12 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
+                    <li class="{% if '/accounts/view_rooms/' == request.path %}active{% endif %}">
+                        <a href="{% url 'view_rooms' %}">
+                            <i class="fas fa-user-injured"></i>
+                            <span>Online consultation</span>
+                        </a>
+                    </li>
                     <li class="{% if '/accounts/view_appointments/' == request.path %}active{% endif %}">
                         <a href="{% url 'view_appointments' %}">
                             <i class="fas fa-calendar-check"></i>
