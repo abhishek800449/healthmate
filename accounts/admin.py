@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, DoctorProfile, PatientProfile, Specialization, MedicalRecord, Country, State, City
+from .models import User, DoctorProfile, PatientProfile, Specialization, MedicalRecord, Country, State, City, Clinic, ClinicGallery, ReviewRating
 # Register your models here.
 
 class SpecializationAdmin(admin.ModelAdmin):
@@ -7,7 +7,7 @@ class SpecializationAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ['user', 'clinic_name','experience', 'registration_number', 'slug']
+    list_display = ['user', 'clinic','experience', 'registration_number', 'slug']
     prepopulated_fields = {'slug': ('registration_number',)}
 
 class MedicalRecordAdmin(admin.ModelAdmin):
@@ -18,8 +18,6 @@ admin.site.register(DoctorProfile, DoctorAdmin)
 admin.site.register(PatientProfile)
 admin.site.register(Specialization, SpecializationAdmin)
 admin.site.register(MedicalRecord, MedicalRecordAdmin)
-admin.site.register(Country)
-admin.site.register(State)
-admin.site.register(City)
-
+admin.site.register(Clinic)
+admin.site.register(ClinicGallery)
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegistrationForm, UserForm, PatientProfileForm, MedicalRecordForm
-from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City
+from .forms import RegistrationForm, UserForm, PatientProfileForm, DoctorProfileForm, MedicalRecordForm, ClinicForm, ClinicGalleryForm
+from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City, ClinicGallery, Clinic
 from appointment.models import Appointment
 from videoapp.models import RoomDetails
 from django.contrib import messages, auth
@@ -29,7 +29,11 @@ def patient_register(request):
             # Now activating user's account
             user.is_active = True
             user.save()
+            messages.success(request, 'Your account has been created successfully.')
             return redirect('/accounts/login')
+        else:
+            messages.error(request, 'Invalid data.')
+            return redirect('/accounts/patient_register')
     else:       
         form = RegistrationForm()
     context = {
@@ -55,7 +59,11 @@ def doctor_register(request):
             user.is_active = True
             user.is_staff = True
             user.save()
+            messages.success(request, 'Your account has been created successfully.')
             return redirect('/accounts/login')
+        else:
+            messages.error(request, 'Invalid data.')
+            return redirect('/accounts/doctor_register')
     else:       
         form = RegistrationForm()
     context = {
@@ -132,17 +140,16 @@ def patient_profile(request):
     patientprofile = get_object_or_404(PatientProfile, user=request.user)
     countries = Country.objects.all()
     if request.method == 'POST':
-        print(request.POST)
         user_form = UserForm(request.POST, request.FILES, instance=request.user)
-        profile_form = PatientProfileForm(request.POST, request.FILES, instance=patientprofile)
+        profile_form = PatientProfileForm(request.POST, instance=patientprofile)
         if user_form.is_valid() and profile_form.is_valid():
-            print("it is valid!!!!!!!")
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile has been updated.')
             return redirect('patient_profile')
         else:
-            print("It is invalid!!!")
+            messages.error(request, 'Please enter valid data in the form!!')
+            return redirect('patient_profile')
     else:
         user_form = UserForm(instance=request.user)
         profile_form = PatientProfileForm(instance=patientprofile)
@@ -157,8 +164,98 @@ def patient_profile(request):
 
 @login_required(login_url='login')
 @user_passes_test(is_doctor)
+def doctor_profile(request):
+    if request.method == 'POST':
+        doctorprofile = DoctorProfile.objects.get(user=request.user)
+        user_form = UserForm(request.POST, request.FILES, instance=request.user)
+        doctor_profile_form = DoctorProfileForm(request.POST, instance=doctorprofile)
+        clinic_form = ClinicForm(request.POST)
+        gallery = ClinicGalleryForm(request.POST, request.FILES)
+        if user_form.is_valid() and doctor_profile_form.is_valid() and clinic_form.is_valid() and gallery.is_valid():
+            user_instance = user_form.save()
+            
+            doctor_profile_instance = doctor_profile_form.save(commit=False)
+            doctor_profile_instance.user = user_instance
+            doctor_profile_instance.save()
+
+            clinic_instance = clinic_form.save(commit=False)
+            clinic_instance.doctor = doctor_profile_instance
+            clinic_instance.save()
+            
+            images = request.FILES.getlist('images')
+            for image in images:
+                ClinicGallery.objects.create(clinic=clinic_instance, images=image)
+
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('doctor_dashboard')
+        else:
+            messages.error(request, 'Please enter valid data in the form!!')
+            return redirect('doctor_profile')
+
+    clinic_form = ClinicForm()
+    gallery = ClinicGalleryForm()
+    doctor_profile_form = DoctorProfileForm()
+    user_form = UserForm(instance=request.user)
+    context = {
+        'clinic_form': clinic_form,
+        'gallery': gallery,
+        'doctor_profile_form': doctor_profile_form,
+        'user_form': user_form,
+    }
+    return render(request, 'accounts/doctor_profile.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def doctor_profile_settings(request):
+    doctorprofile = DoctorProfile.objects.get(user=request.user)
+    clinic = Clinic.objects.get(doctor=doctorprofile)
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, request.FILES, instance=request.user)
+        doctor_profile_form = DoctorProfileForm(request.POST, instance=doctorprofile)
+        clinic_form = ClinicForm(request.POST, instance=clinic)
+        gallery = ClinicGalleryForm(request.POST, request.FILES)
+        if user_form.is_valid() and doctor_profile_form.is_valid() and clinic_form.is_valid() and gallery.is_valid():
+            user_instance = user_form.save()
+            
+            doctor_profile_instance = doctor_profile_form.save(commit=False)
+            doctor_profile_instance.user = user_instance
+            doctor_profile_instance.save()
+
+            clinic_instance = clinic_form.save(commit=False)
+            clinic_instance.doctor = doctor_profile_instance
+            clinic_instance.save()
+            
+            images = request.FILES.getlist('images')
+            for image in images:
+                ClinicGallery.objects.create(clinic=clinic_instance, images=image)
+
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('doctor_profile_settings')
+        
+        else:
+            messages.error(request, 'Please enter valid data in the form!!')
+            return redirect('doctor_profile_settings')
+    else:
+        clinic_form = ClinicForm(instance=clinic)
+        gallery = ClinicGalleryForm()
+        doctor_profile_form = DoctorProfileForm(instance=doctorprofile)
+        user_form = UserForm(instance=request.user)
+    context = {
+        'clinic_form': clinic_form,
+        'gallery': gallery,
+        'doctor_profile_form': doctor_profile_form,
+        'user_form': user_form,
+    }
+    return render(request, 'accounts/doctor_profile_settings.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
 def doctor_dashboard(request):
     doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
+    if doctorprofile.registration_number is None:
+        return redirect('doctor_profile')
     try:
         appointments = Appointment.objects.filter(doctor=doctorprofile).order_by('date', 'time')
     except Appointment.DoesNotExist:

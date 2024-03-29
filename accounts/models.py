@@ -147,9 +147,10 @@ class Specialization(models.Model):
 class DoctorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     specialization = models.ForeignKey(Specialization, on_delete=models.SET_NULL, null=True)
-    clinic_name = models.CharField(max_length=100, null=True, blank=True)
     experience = models.PositiveIntegerField(null=True, blank=True, help_text="Years of experience")
     registration_number = models.CharField(max_length=20, null=True, blank=True, help_text="Doctor's registration number")
+    about_me = models.TextField(blank=True, null=True)
+    price = models.PositiveIntegerField(null=True)
     slug = models.SlugField(max_length=100, unique=True, null=True)
 
     def __str__(self):
@@ -163,7 +164,19 @@ class DoctorProfile(models.Model):
     
     def checkout_url(self):
         return reverse('checkout', args=[self.slug])
-    
+
+
+class Clinic(models.Model):
+    doctor = models.OneToOneField(DoctorProfile, on_delete=models.CASCADE, null=True)
+    clinic_name = models.CharField(max_length=100, null=True, blank=True)
+    address = models.CharField(blank=True, max_length=100)
+    clinic_country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
+    clinic_state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True)
+    clinic_city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.clinic_name   
+
 
 class PatientProfile(models.Model):
     BLOOD_GROUPS = [
@@ -218,3 +231,24 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not old_file == new_file:
         if os.path.isfile(old_file.path):
             os.remove(old_file.path)
+
+
+class ReviewRating(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE)
+    patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, blank=True)
+    review = models.TextField(max_length=500, blank=True)
+    rating = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.subject
+    
+
+class ClinicGallery(models.Model):
+    clinic = models.ForeignKey(Clinic, default=None, on_delete=models.CASCADE)
+    images = models.ImageField(upload_to='clinic_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.clinic.clinic_name

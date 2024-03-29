@@ -176,16 +176,4 @@
         });
     });
 </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const toggleButton = document.getElementById('billing-address-toggle');
-      const form = document.getElementById('billing-address-form');
-      const addresses = document.getElementById('billing-addresses');
-  
-      toggleButton.addEventListener('click', function () {
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        addresses.style.display = addresses.style.display === 'none' ? 'block' : 'none';
-      });
-    });
-  </script>
 {% endblock %}

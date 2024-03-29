@@ -7,7 +7,13 @@
     <div class="container-fluid">
         <div class="row align-items-center">
             <div class="col-md-12 col-12">
-                <h2 class="breadcrumb-title"><center>Complete your profile to proceed.</center></h2>
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Profile Settings</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Profile Settings</h2>
             </div>
         </div>
     </div>
@@ -17,15 +23,19 @@
 <!-- Page Content -->
 <div class="content">
     <div class="container-fluid">
-        
-        <div class="row">
-            {% include 'includes/alerts.html' %}
-            <form action="{% url 'doctor_profile' %}" method="POST" enctype="multipart/form-data" class="row justify-content-center">
-            {% csrf_token %}
-                <div class="col-md-7 col-lg-8 col-xl-9">
-                
-                    <!-- Basic Information -->
-                    <div class="card">
+        <div class="row">      
+            {% include 'includes/doctor_sidebar.html' %}     
+            
+            <div class="col-md-7 col-lg-8 col-xl-9">
+                {% include 'includes/alerts.html' %}
+                {{ user_form.errors }}
+                {{ doctor_profile_form.errors }}
+                {{ clinic_form.errors }}
+                {{ gallery.errors }}
+                <!-- Basic Information -->
+                <div class="card">
+                    <form action="{% url 'doctor_profile_settings' %}" method="POST" enctype="multipart/form-data" class="row justify-content-center">
+                    {% csrf_token %}
                         <div class="card-body">
                             <h4 class="card-title">Basic Information</h4>
                             <div class="row form-row">
@@ -78,11 +88,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- /Basic Information -->
-                    
-                    <!-- About Me -->
-                    <div class="card">
+                </div>
+                <!-- /Basic Information -->
+                
+                <!-- About Me -->
+                <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">About Me</h4>
                             <div class="form-group mb-0">
@@ -90,11 +100,11 @@
                                 {{doctor_profile_form.about_me}}
                             </div>
                         </div>
-                    </div>
-                    <!-- /About Me -->
-                    
-                    <!-- Clinic Info -->
-                    <div class="card">
+                </div>
+                <!-- /About Me -->
+                
+                <!-- Clinic Info -->
+                <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Clinic Info</h4>
                             <div class="row form-row">
@@ -136,11 +146,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- /Clinic Info -->
+                </div>
+                <!-- /Clinic Info -->
 
-                    <!-- Contact Details -->
-                    <div class="card contact-card">
+                <!-- Contact Details -->
+                <div class="card contact-card">
                         <div class="card-body">
                             <h4 class="card-title">Contact Details</h4>
                             <div class="row form-row">
@@ -170,11 +180,11 @@
                                 </div> 
                             </div>
                         </div>
-                    </div>
-                    <!-- /Contact Details -->
-                    
-                    <!-- Pricing -->
-                    <div class="card">
+                </div>
+                <!-- /Contact Details -->
+                
+                <!-- Pricing -->
+                <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Pricing</h4>
                             <div class="form-group mb-0">
@@ -182,11 +192,11 @@
                                 {{doctor_profile_form.price}}
                             </div>                       
                         </div>
-                    </div>
-                    <!-- /Pricing -->
-                    
-                    <!-- Services and Specialization -->
-                    <div class="card services-card">
+                </div>
+                <!-- /Pricing -->
+                
+                <!-- Services and Specialization -->
+                <div class="card services-card">
                         <div class="card-body">
                             <h4 class="card-title">Specialization</h4>
                             <div class="form-group mb-0">
@@ -195,11 +205,11 @@
                                 <small class="form-text text-muted">Note: Select one of the specializations.</small>
                             </div> 
                         </div>              
-                    </div>
-                    <!-- /Services and Specialization -->
-            
-                    <!-- Registrations -->
-                    <div class="card">
+                </div>
+                <!-- /Services and Specialization -->
+
+                <!-- Registrations -->
+                <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Registration number & Experience</h4>
                             <div class="registrations-info">
@@ -219,14 +229,14 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- /Registrations -->
-                    
-                    <div class="submit-section submit-btn-bottom">
-                        <button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
-                    </div>                
                 </div>
-            </form>
+                <!-- /Registrations -->
+
+                <div class="submit-section submit-btn-bottom">
+                    <button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
+                </div>
+            </form>                
+            </div>
         </div>
     </div>
 </div>		

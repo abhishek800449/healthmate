@@ -67,8 +67,8 @@
                             <small class="unread-msg">23</small>
                         </a>
                     </li>
-                    <li>
-                        <a href="doctor-profile-settings.html">
+                    <li class="{% if '/accounts/doctor_profile_settings/' == request.path %}active{% endif %}">
+                        <a href="{% url 'doctor_profile_settings' %}">
                             <i class="fas fa-user-cog"></i>
                             <span>Profile Settings</span>
                         </a>

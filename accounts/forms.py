@@ -1,7 +1,8 @@
 from django import forms
-from .models import User, PatientProfile, Country, State, City, MedicalRecord
+from .models import User, PatientProfile, DoctorProfile, Country, State, City, MedicalRecord, Clinic, ClinicGallery
 from appointment.models import TimeSlot
 import re
+from django.utils.text import slugify
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control floating'}))
@@ -52,7 +53,7 @@ class UserForm(forms.ModelForm):
         super(UserForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
-        self.fields['dob'].widget.attrs['class'] = 'form-control datetimepicker'
+
         self.fields['profile_picture'].widget.attrs['class'] = 'upload'
         # Adjust foreign key fields
         self.fields['country'].queryset = Country.objects.all()
@@ -108,3 +109,59 @@ class MedicalRecordForm(forms.ModelForm):
         self.fields['title'].widget.attrs['class'] = 'form-control'
         self.fields['description'].widget.attrs['class'] = 'form-control'
         self.fields['file_path'].widget.attrs['class'] = 'form-control'
+
+
+class ClinicForm(forms.ModelForm):
+    class Meta:
+        model = Clinic
+        fields = ('clinic_name', 'address', 'clinic_country', 'clinic_state', 'clinic_city')
+        
+    def __init__(self, *args, **kwargs):
+        super(ClinicForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
+        # Adjust foreign key fields
+        self.fields['clinic_country'].queryset = Country.objects.all()
+        self.fields['clinic_state'].queryset = State.objects.none()  # Initially no states
+        self.fields['clinic_city'].queryset = City.objects.none()    # Initially no cities
+
+        if 'country' in self.data:
+            try:
+                country_id = int(self.data.get('clinic_country'))
+                self.fields['clinic_state'].queryset = State.objects.filter(country_id=country_id)
+            except (ValueError, TypeError):
+                pass
+        if 'state' in self.data:
+            try:
+                state_id = int(self.data.get('clinic_state'))
+                self.fields['clinic_city'].queryset = City.objects.filter(state_id=state_id)
+            except (ValueError, TypeError):
+                pass
+
+
+class ClinicGalleryForm(forms.ModelForm):
+    class Meta:
+        model = ClinicGallery
+        fields = ['images']
+        widgets = {
+            'images': forms.ClearableFileInput(attrs={'multiple': True})  # Allow multiple image uploads
+        }
+
+
+class DoctorProfileForm(forms.ModelForm):
+    class Meta:
+        model = DoctorProfile
+        fields = ('specialization', 'experience', 'registration_number', 'about_me', 'price')
+
+    def __init__(self, *args, **kwargs):
+        super(DoctorProfileForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
+    def save(self, commit=True):
+        instance = super(DoctorProfileForm, self).save(commit=False)
+        instance.slug = slugify(instance.registration_number)  # Set slug based on registration_number
+        if commit:
+            instance.save()
+        return instance
