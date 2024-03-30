@@ -141,12 +141,15 @@ class ClinicForm(forms.ModelForm):
 
 
 class ClinicGalleryForm(forms.ModelForm):
+    images = forms.FileField(widget = forms.TextInput(attrs={
+            "type": "File",
+            "class": "form-control",
+            "multiple": "True",
+        }))
+    
     class Meta:
         model = ClinicGallery
         fields = ['images']
-        widgets = {
-            'images': forms.ClearableFileInput(attrs={'multiple': True})  # Allow multiple image uploads
-        }
 
 
 class DoctorProfileForm(forms.ModelForm):

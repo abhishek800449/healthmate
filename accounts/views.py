@@ -171,7 +171,7 @@ def doctor_profile(request):
         doctor_profile_form = DoctorProfileForm(request.POST, instance=doctorprofile)
         clinic_form = ClinicForm(request.POST)
         gallery = ClinicGalleryForm(request.POST, request.FILES)
-        if user_form.is_valid() and doctor_profile_form.is_valid() and clinic_form.is_valid() and gallery.is_valid():
+        if user_form.is_valid() and doctor_profile_form.is_valid() and clinic_form.is_valid():
             user_instance = user_form.save()
             
             doctor_profile_instance = doctor_profile_form.save(commit=False)
@@ -215,7 +215,7 @@ def doctor_profile_settings(request):
         doctor_profile_form = DoctorProfileForm(request.POST, instance=doctorprofile)
         clinic_form = ClinicForm(request.POST, instance=clinic)
         gallery = ClinicGalleryForm(request.POST, request.FILES)
-        if user_form.is_valid() and doctor_profile_form.is_valid() and clinic_form.is_valid() and gallery.is_valid():
+        if user_form.is_valid() and doctor_profile_form.is_valid() and clinic_form.is_valid():
             user_instance = user_form.save()
             
             doctor_profile_instance = doctor_profile_form.save(commit=False)
