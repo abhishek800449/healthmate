@@ -11,4 +11,5 @@ urlpatterns = [
     path('checkout/booking_success/', views.booking_success, name='booking_success'),
     path('checkout/<slug:doctor_slug>/', views.checkout, name='checkout'),
     path('search/', views.search, name='search'),
+    path('submit_review/<int:doctor_id>/', views.submit_review, name='submit_review'),
 ]

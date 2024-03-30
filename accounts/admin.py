@@ -20,4 +20,5 @@ admin.site.register(Specialization, SpecializationAdmin)
 admin.site.register(MedicalRecord, MedicalRecordAdmin)
 admin.site.register(Clinic)
 admin.site.register(ClinicGallery)
+admin.site.register(ReviewRating)
 

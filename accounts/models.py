@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 import os
 from django.dispatch import receiver
+from django.db.models import Avg, Count
 # Create your models here.
 
 class MyAccountManager(BaseUserManager):
@@ -164,6 +165,20 @@ class DoctorProfile(models.Model):
     
     def checkout_url(self):
         return reverse('checkout', args=[self.slug])
+    
+    def averageReview(self):
+        reviews = ReviewRating.objects.filter(doctor=self).aggregate(average=Avg('rating'))
+        avg = 0
+        if reviews['average'] is not None:
+            avg = float(reviews['average'])
+        return avg
+
+    def countReview(self):
+        reviews = ReviewRating.objects.filter(doctor=self).aggregate(count=Count('id'))
+        count = 0
+        if reviews['count'] is not None:
+            count = int(reviews['count'])
+        return count
 
 
 class Clinic(models.Model):
@@ -176,6 +191,10 @@ class Clinic(models.Model):
 
     def __str__(self):
         return self.clinic_name   
+
+    def get_clinic_address(self):
+        address_parts = [self.clinic_name, self.address, self.clinic_city.name, self.clinic_state.name, self.clinic_country.name]
+        return ', '.join(filter(None, address_parts))
 
 
 class PatientProfile(models.Model):
@@ -243,7 +262,7 @@ class ReviewRating(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.subject
+        return self.title
     
 
 class ClinicGallery(models.Model):

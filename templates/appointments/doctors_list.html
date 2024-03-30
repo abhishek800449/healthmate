@@ -125,28 +125,27 @@
                         <div class="doctor-widget">
                             <div class="doc-info-left">
                                 <div class="doctor-img">
-                                    <a href="doctor-profile.html">
+                                    <a href="{{doctor.get_url}}">
                                         <img src="{{doctor.user.profile_picture.url}}" class="img-fluid" alt="User Image">
                                     </a>
                                 </div>
                                 <div class="doc-info-cont">
-                                    <h4 class="doc-name"><a href="doctor-profile.html">Dr. {{doctor.user.get_full_name}}</a></h4>
+                                    <h4 class="doc-name"><a href="{{doctor.get_url}}">Dr. {{doctor.user.get_full_name}}</a></h4>
                                     <p class="doc-speciality">{{doctor.specialization}}</p>
-                                    <h5 class="doc-department"><img src="{% static 'assets/img/specialities/specialities-05.png' %}" class="img-fluid" alt="Speciality">Dentist</h5>
+                                    <h5 class="doc-department"><img src="{{doctor.specialization.image.url}}" class="img-fluid" alt="Speciality">{{doctor.specialization}}</h5>
                                     <div class="rating">
-                                        <i class="fas fa-star filled"></i>
-                                        <i class="fas fa-star filled"></i>
-                                        <i class="fas fa-star filled"></i>
-                                        <i class="fas fa-star filled"></i>
-                                        <i class="fas fa-star"></i>
-                                        <span class="d-inline-block average-rating">(17)</span>
+                                        <i class="fas fa-star {% if doctor.averageReview >= 1.0 %} filled {% endif %}"></i>
+                                        <i class="fas fa-star {% if doctor.averageReview >= 2.0 %} filled {% endif %}"></i>
+                                        <i class="fas fa-star {% if doctor.averageReview >= 3.0 %} filled {% endif %}"></i>
+                                        <i class="fas fa-star {% if doctor.averageReview >= 4.0 %} filled {% endif %}"></i>
+                                        <i class="fas fa-star {% if doctor.averageReview >= 5.0 %} filled {% endif %}"></i>
+                                        <span class="d-inline-block average-rating">({{doctor.countReview}})</span>
                                     </div>
                                     <div class="clinic-details">
                                         <p class="doc-location"><i class="fas fa-map-marker-alt"></i>{{doctor.user.get_full_address}}</p>
                                     </div>
                                     <div class="clinic-services">
-                                        <span>Dental Fillings</span>
-                                        <span> Whitneing</span>
+                                        <span>Experience: {{doctor.experience}} years</span>
                                     </div>
                                 </div>
                             </div>
@@ -154,9 +153,8 @@
                                 <div class="clini-infos">
                                     <ul>
                                         <li><i class="far fa-thumbs-up"></i> 98%</li>
-                                        <li><i class="far fa-comment"></i> 17 Feedback</li>
-                                        <li><i class="fas fa-map-marker-alt"></i> Florida, USA</li>
-                                        <li><i class="far fa-money-bill-alt"></i> $300 - $1000 <i class="fas fa-info-circle" data-toggle="tooltip" title="Lorem Ipsum"></i> </li>
+                                        <li><i class="far fa-comment"></i> {{doctor.countReview}} Feedback</li>
+                                        <li><i class="far fa-money-bill-alt"></i> ₹ {{doctor.price}} <i class="fas fa-info-circle" data-toggle="tooltip" title="Booking charges"></i> </li>
                                     </ul>
                                 </div>
                                 <div class="clinic-booking">
@@ -168,11 +166,7 @@
                     </div>
                 </div>
                 <!-- /Doctor Widget -->
-                {% endfor %}
-
-                <div class="load-more text-center">
-                    <a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a>	
-                </div>	
+                {% endfor %}	
             </div>
         </div>
 

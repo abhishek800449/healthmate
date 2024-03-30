@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Reviews</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Reviews</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'includes/doctor_sidebar.html' %}
+            <div class="col-md-7 col-lg-8 col-xl-9">
+                <div class="doc-review review-listing">
+                
+                    <!-- Review Listing -->
+                    <ul class="comments-list">
+                    
+                        <!-- Comment List -->
+                        {% for review in reviews %}
+                        <li>                            
+                            <div class="comment">
+                                <img class="avatar rounded-circle" alt="User Image" src="{{review.patient.user.profile_picture.url}}">
+                                <div class="comment-body">
+                                    <div class="meta-data">
+                                        <span class="comment-author">{{review.patient.user.get_full_name}}</span>
+                                        <span class="comment-date">Reviewed on {{review.updated_at}}</span>
+                                        <div class="review-count rating">
+                                            <i class="fas fa-star {% if review.rating >= 1.0 %} filled {% endif %}"></i>
+                                            <i class="fas fa-star {% if review.rating >= 2.0 %} filled {% endif %}"></i>
+                                            <i class="fas fa-star {% if review.rating >= 3.0 %} filled {% endif %}"></i>
+                                            <i class="fas fa-star {% if review.rating >= 4.0 %} filled {% endif %}"></i>
+                                            <i class="fas fa-star {% if review.rating >= 5.0 %} filled {% endif %}"></i>
+                                        </div>
+                                    </div>
+                                    <p class="recommended"><i class="far fa-thumbs-up"></i>{{review.title}}</p>
+                                    <p class="comment-content">
+                                        {{review.review}}pus
+                                    </p>
+                                </div>
+                            </div>                                
+                        </li>
+                        {% endfor %}
+                        <!-- /Comment List -->
+                       
+                    </ul>
+                    <!-- /Comment List -->
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>		
+<!-- /Page Content -->
+{% include 'includes/footer.html' %}
+{% endblock %}

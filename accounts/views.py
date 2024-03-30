@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, UserForm, PatientProfileForm, DoctorProfileForm, MedicalRecordForm, ClinicForm, ClinicGalleryForm
-from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City, ClinicGallery, Clinic
+from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City, ClinicGallery, Clinic, ReviewRating
 from appointment.models import Appointment
 from videoapp.models import RoomDetails
 from django.contrib import messages, auth
@@ -511,3 +511,15 @@ def view_rooms(request):
         'rooms': rooms,
     }
     return render(request, 'accounts/view_rooms.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def reviews(request):
+    doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
+    reviews = ReviewRating.objects.filter(doctor=doctorprofile)
+    context = {
+        'doctorprofile': doctorprofile,
+        'reviews': reviews,
+    }
+    return render(request, 'accounts/reviews.html', context)

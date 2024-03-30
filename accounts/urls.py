@@ -27,6 +27,7 @@ urlpatterns = [
     path('view_rooms/', views.view_rooms, name='view_rooms'),
     path('doctor_profile/', views.doctor_profile, name='doctor_profile'),
     path('doctor_profile_settings/', views.doctor_profile_settings, name='doctor_profile_settings'),
+    path('reviews/', views.reviews, name='reviews'),
     #path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     #path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
     #path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate, name='resetpassword_validate'),

@@ -54,8 +54,8 @@
                             <span>Invoices</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="reviews.html">
+                    <li class="{% if '/accounts/reviews/' == request.path %}active{% endif %}">
+                        <a href="{% url 'reviews' %}">
                             <i class="fas fa-star"></i>
                             <span>Reviews</span>
                         </a>
