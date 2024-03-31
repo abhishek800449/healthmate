@@ -5,6 +5,7 @@ from django.utils import timezone
 import os
 from django.dispatch import receiver
 from django.db.models import Avg, Count
+from datetime import date
 # Create your models here.
 
 class MyAccountManager(BaseUserManager):
@@ -133,6 +134,10 @@ class User(AbstractBaseUser):
         address_lines = [line for line in address_lines if line]  # Remove empty lines
         address = ", ".join(address_lines)
         return f"{address}, {self.city}, {self.state}, {self.country}"
+    
+    def age(self):
+        today = date.today()
+        return today.year - self.dob.year - ((today.month, today.day) < (self.dob.month, self.dob.day))
 
 
 class Specialization(models.Model):
@@ -271,3 +276,23 @@ class ClinicGallery(models.Model):
 
     def __str__(self):
         return self.clinic.clinic_name
+    
+
+class Prescription(models.Model):
+    doctor = models.ForeignKey(DoctorProfile, on_delete=models.SET_NULL, null=True)
+    patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    signature = models.ImageField(upload_to='signatures/')
+
+    def __str__(self):
+        return f"Prescription #{self.id}"
+
+class PrescriptionItem(models.Model):
+    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    quantity = models.IntegerField()
+    days = models.IntegerField()
+    morning = models.BooleanField(default=False)
+    afternoon = models.BooleanField(default=False)
+    evening = models.BooleanField(default=False)
+    night = models.BooleanField(default=False)

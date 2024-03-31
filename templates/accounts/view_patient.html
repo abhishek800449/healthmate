@@ -39,8 +39,8 @@
                                     <h3>{{patientprofile.user.get_full_name}}</h3>
                                     
                                     <div class="patient-details">
-                                        <h5><b>Patient ID :</b>{{patientprofile.user.id}}</h5>
-                                        <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i>{{patientprofile.user.get_full_address}}</h5>
+                                        <h5><b>Patient ID : </b>PT{{patientprofile.user.id}}</h5>
+                                        <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i>{{patientprofile.user.city}}, {{patientprofile.user.state}}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                         <div class="patient-info">
                             <ul>
                                 <li>Phone <span>{{patientprofile.user.phone_number}}</span></li>
-                                <li>Age <span>38 Years, Male</span></li>
+                                <li>Age <span>{{patientprofile.user.age}} Years, {{patientprofile.user.gender}}</span></li>
                                 <li>Blood Group <span>{{patientprofile.blood_group}}</span></li>
                             </ul>
                         </div>
@@ -85,7 +85,7 @@
                             <!-- Prescription Tab -->
                             <div class="tab-pane fade" id="pres">
                                 <div class="text-right">
-                                    <a href="add-prescription.html" class="add-new-btn">Add Prescription</a>
+                                    <a href="{% url 'add_prescription' patientprofile.user.username %}" class="add-new-btn">Add Prescription</a>
                                 </div>
                                 <div class="card card-table mb-0">
                                     <div class="card-body">

@@ -30,8 +30,8 @@
                     <div class="card-body">
                     
                         <!-- Checkout Form -->
-                        <form action="https://dreamguys.co.in/demo/doccure/booking-success.html">
-                        
+                        <form method="POST" action="{% url 'booking_success' %}">
+                        {% csrf_token %}
                             <!-- Personal Information -->
                             <div class="info-widget">
                                 <h4 class="card-title">Personal Information</h4>
@@ -39,39 +39,46 @@
                                     <div class="col-md-6 col-sm-12">
                                         <div class="form-group card-label">
                                             <label>First Name</label>
-                                            <input class="form-control" type="text">
+                                            <input class="form-control" type="text" name="first_name" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <div class="form-group card-label">
                                             <label>Last Name</label>
-                                            <input class="form-control" type="text">
+                                            <input class="form-control" type="text" name="last_name" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <div class="form-group card-label">
                                             <label>Email</label>
-                                            <input class="form-control" type="email">
+                                            <input class="form-control" type="email" name="email" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <div class="form-group card-label">
                                             <label>Phone</label>
-                                            <input class="form-control" type="text">
+                                            <input class="form-control" type="text" name="phone" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="form-group card-label">
+                                            <label>Billing address</label>
+                                            <input class="form-control" type="text" name="billing_address" required>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="exist-customer">Existing Customer? <a href="#">Click here to login</a></div>
                             </div>
                             <!-- /Personal Information -->
-                            
+                            <!-- hidden input -->
+                            <input type="text" name="tax" value={{tax}} hidden>
+                            <input type="text" name="total_amount" value={{total}} hidden>
                             <div class="payment-widget">
                                 <h4 class="card-title">Payment Method</h4>
                                 
                                 <!-- Credit Card Payment -->
                                 <div class="payment-list">
                                     <label class="payment-radio credit-card-option">
-                                        <input type="radio" name="radio" checked>
+                                        <input type="radio" name="payment_method" value="Credit Card" required>
                                         <span class="checkmark"></span>
                                         Credit card
                                     </label>
@@ -81,17 +88,26 @@
                                 <!-- Paypal Payment -->
                                 <div class="payment-list">
                                     <label class="payment-radio paypal-option">
-                                        <input type="radio" name="radio">
+                                        <input type="radio" name="payment_method" value="Paypal" required>
                                         <span class="checkmark"></span>
                                         Paypal
                                     </label>
                                 </div>
                                 <!-- /Paypal Payment -->
-   
+                                
+                                <!-- Debit Payment -->
+                                <div class="payment-list">
+                                    <label class="payment-radio debit-card-option">
+                                        <input type="radio" name="payment_method" value="Debit" required>
+                                        <span class="checkmark"></span>
+                                        Debit Card
+                                    </label>
+                                </div>
+                                <!-- /Debit Payment -->
+
                                 <!-- Submit Section -->
                                 <div class="submit-section mt-4">
                                     <button type="submit" class="btn btn-primary submit-btn">Confirm and Pay</button>
-                                    <a href="{% url 'booking_success' %}" class="btn btn-success">Confirm and Pay</a>
                                 </div>
                                 <!-- /Submit Section -->
                                 
@@ -116,20 +132,20 @@
                         <!-- Booking Doctor Info -->
                         <div class="booking-doc-info">
                             <a href="doctor-profile.html" class="booking-doc-img">
-                                <img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
+                                <img src="{{single_doctor.user.profile_picture.url}}" alt="User Image">
                             </a>
                             <div class="booking-info">
                                 <h4><a href="doctor-profile.html">Dr. {{single_doctor.user.get_full_name}}</a></h4>
                                 <div class="rating">
-                                    <i class="fas fa-star filled"></i>
-                                    <i class="fas fa-star filled"></i>
-                                    <i class="fas fa-star filled"></i>
-                                    <i class="fas fa-star filled"></i>
-                                    <i class="fas fa-star"></i>
-                                    <span class="d-inline-block average-rating">35</span>
+                                    <i class="fas fa-star {% if single_doctor.averageReview >= 1.0 %} filled {% endif %}"></i>
+                                    <i class="fas fa-star {% if single_doctor.averageReview >= 2.0 %} filled {% endif %}"></i>
+                                    <i class="fas fa-star {% if single_doctor.averageReview >= 3.0 %} filled {% endif %}"></i>
+                                    <i class="fas fa-star {% if single_doctor.averageReview >= 4.0 %} filled {% endif %}"></i>
+                                    <i class="fas fa-star {% if single_doctor.averageReview >= 5.0 %} filled {% endif %}"></i>
+                                    <span class="d-inline-block average-rating">({{single_doctor.countReview}})</span>
                                 </div>
                                 <div class="clinic-details">
-                                    <p class="doc-location"><i class="fas fa-map-marker-alt"></i>{{single_doctor.user.get_full_address}}</p>
+                                    <p class="doc-location"><i class="fas fa-map-marker-alt"></i>{{clinic.get_clinic_address}}</p>
                                 </div>
                             </div>
                         </div>
@@ -138,18 +154,18 @@
                         <div class="booking-summary">
                             <div class="booking-item-wrap">
                                 <ul class="booking-date">
-                                    <li>Date <span>{{selected_date}}</span></li>
-                                    <li>Time <span>{{selected_timeslot}}</span></li>
+                                    <li>Selected Date <span>{{selected_date}}</span></li>
+                                    <li>Selected Time <span>{{selected_timeslot}}</span></li>
                                 </ul>
                                 <ul class="booking-fee">
-                                    <li>Consulting Fee <span>$100</span></li>
-                                    <li>Booking Fee <span>$10</span></li>
+                                    <li>Consulting Fee <span>₹{{single_doctor.price}}</span></li>
+                                    <li>Booking Fee <span>₹{{tax}}</span></li>
                                 </ul>
                                 <div class="booking-total">
                                     <ul class="booking-total-list">
                                         <li>
                                             <span>Total</span>
-                                            <span class="total-cost">$110</span>
+                                            <span class="total-cost">₹{{total}}</span>
                                         </li>
                                     </ul>
                                 </div>

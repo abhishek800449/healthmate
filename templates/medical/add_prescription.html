@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Profile</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar dct-dashbd-lft">
+            
+                <!-- Profile Widget -->
+                <div class="card widget-profile pat-widget-profile">
+                    <div class="card-body">
+                        <div class="pro-widget-content">
+                            <div class="profile-info-widget">
+                                <a href="#" class="booking-doc-img">
+                                    <img src="{{patientprofile.user.profile_picture.url}}" alt="User Image">
+                                </a>
+                                <div class="profile-det-info">
+                                    <h3>{{patientprofile.user.get_full_name}}</h3>
+                                    
+                                    <div class="patient-details">
+                                        <h5><b>Patient ID : </b>PT{{patientprofile.user.id}}</h5>
+                                        <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i>{{patientprofile.user.city}}, {{patientprofile.user.state}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="patient-info">
+                            <ul>
+                                <li>Phone <span>{{patientprofile.user.phone_number}}</span></li>
+                                <li>Age <span>{{patientprofile.user.age}} Years, {{patientprofile.user.gender}}</span></li>
+                                <li>Blood Group <span>{{patientprofile.blood_group}}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Profile Widget -->                
+            </div>
+
+            <div class="col-md-7 col-lg-8 col-xl-9">
+                {% include 'includes/alerts.html' %}
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Add Prescription</h4>
+                    </div>
+                    <form action="{% url 'add_prescription' patientprofile.user.username %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="biller-info">
+                                        <h4 class="d-block">Dr. {{doctor.user.get_full_name}}</h4>
+                                        <span class="d-block text-sm text-muted">{{doctor.specialization}}</span>
+                                        <span class="d-block text-sm text-muted">{{clinic.get_clinic_address}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 text-sm-right">
+                                    <div class="billing-info">
+                                        <h4 class="d-block">{{today}}</h4>
+                                        <!--span class="d-block text-muted">#INV0001</span-->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Add Item -->
+                            <div class="add-more-item text-right">
+                                <a onclick="addPrescriptionRow()"><i class="fas fa-plus-circle"></i> Add Item</a>
+                            </div>	
+                            <!-- /Add Item -->
+                            
+                            <!-- Prescription Item -->
+                            <div class="card card-table">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-center">
+                                            <thead>
+                                                <tr>
+                                                    <th style="min-width: 200px">Name</th>
+                                                    <th style="min-width: 100px">Quantity</th>
+                                                    <th style="min-width: 100px">Days</th>
+                                                    <th style="min-width: 100px;">Time</th>
+                                                    <th style="min-width: 80px;"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="prescriptionTableBody">
+                                                <tr id="prescriptionRow1">
+                                                    <td>
+                                                        <input class="form-control" type="text" name="item_name">
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control" type="number" name="quantity" min="0">
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control" type="number" name="days" min="0">
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" name="morning" value="True"> Morning
+                                                            </label>
+                                                            <input type="hidden" name="morning" value="False">
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" name="afternoon" value="True"> Afternoon
+                                                            </label>
+                                                            <input type="hidden" name="afternoon" value="False">
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" name="evening" value="True"> Evening
+                                                            </label>
+                                                            <input type="hidden" name="evening" value="False">
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" name="night" value="True"> Night
+                                                            </label>
+                                                            <input type="hidden" name="night" value="False">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn bg-danger-light trash"><i class="far fa-trash-alt" onclick="deletePrescriptionRow(1)"></i></a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Prescription Item -->
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="des">Description ( Optional )</label>
+                                        <textarea class="form-control" id="des" name="description"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Signature -->
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <div class="signature-wrap">
+                                        <label for="signature_image" class="signature">
+                                            Click here to sign                                        
+                                        </label>
+                                        <input type="file" name="signature_image" id="signature_image" hidden required>
+                                        <img src="" id="signature_preview" alt="Signature Image" style="display: none; width: 100%; height: auto;">
+                                        <div class="sign-name">
+                                            <p class="mb-0">( Dr. {{doctor.user.get_full_name}} )</p>
+                                            <span class="text-muted">Signature</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Signature -->
+                            
+                            <!-- Submit Section -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="submit-section">
+                                        <button type="submit" class="btn btn-primary submit-btn">Save</button>
+                                        <button type="reset" class="btn btn-secondary submit-btn">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Submit Section -->
+                            
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>		
+<!-- /Page Content -->
+
+{% include 'includes/footer.html' %}
+
+<script>
+    let rowCount = 1; // Initialize the row count
+
+// Function to add a new prescription row
+function addPrescriptionRow() {
+    rowCount++; // Increment the row count
+    let newRow = `
+    <tr id="prescriptionRow${rowCount}">
+        <td>
+            <input class="form-control" type="text" name="item_name">
+        </td>
+        <td>
+            <input class="form-control" type="number" name="quantity" min="0">
+        </td>
+        <td>
+            <input class="form-control" type="number" name="days" min="0">
+        </td>
+        <td>
+            <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" name="morning" value="True"> Morning
+                </label>
+                <input type="hidden" name="morning" value="False">
+            </div>
+            <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" name="afternoon" value="True"> Afternoon
+                </label>
+                <input type="hidden" name="afternoon" value="False">
+            </div>
+            <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" name="evening" value="True"> Evening
+                </label>
+                <input type="hidden" name="evening" value="False">
+            </div>
+            <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" name="night" value="True"> Night
+                </label>
+                <input type="hidden" name="night" value="False">
+            </div>
+        </td>
+        <td>
+            <a class="btn bg-danger-light trash"><i class="far fa-trash-alt" onclick="deletePrescriptionRow(${rowCount})"></i></a>
+        </td>
+    </tr>
+    `;
+    $('#prescriptionTableBody').append(newRow); // Append the new row to the table body
+}
+
+function deletePrescriptionRow(rowId) {
+    $('#prescriptionRow' + rowId).remove(); // Remove the specified row by ID
+}
+
+
+document.getElementById('signature_image').addEventListener('change', function() {
+    const fileInput = this;
+    const signaturePreview = document.getElementById('signature_preview');
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            signaturePreview.src = e.target.result;
+            signaturePreview.style.display = 'block'; // Show the signature preview image
+        }
+
+        reader.readAsDataURL(fileInput.files[0]); // Read the file as a data URL
+    }
+});
+
+</script>
+{% endblock %}

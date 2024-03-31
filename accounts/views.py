@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, UserForm, PatientProfileForm, DoctorProfileForm, MedicalRecordForm, ClinicForm, ClinicGalleryForm
-from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City, ClinicGallery, Clinic, ReviewRating
+from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City, ClinicGallery, Clinic, ReviewRating, Prescription, PrescriptionItem
 from appointment.models import Appointment
 from videoapp.models import RoomDetails
 from django.contrib import messages, auth
@@ -9,6 +9,7 @@ from appointment.models import TimeSlot
 from django.utils import timezone
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse, JsonResponse
+from datetime import date
 import re
 
 # Create your views here.
@@ -523,3 +524,55 @@ def reviews(request):
         'reviews': reviews,
     }
     return render(request, 'accounts/reviews.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def add_prescription(request, patient_username=None):  
+    patient = User.objects.get(username=patient_username)
+    patientprofile = PatientProfile.objects.get(user=patient)
+    doctor = DoctorProfile.objects.get(user_id=request.user.id)
+    clinic = Clinic.objects.get(doctor=doctor)
+    today = date.today()
+    if request.method == 'POST':
+        prescription_items = request.POST.getlist('item_name')
+        quantities = request.POST.getlist('quantity')
+        days = request.POST.getlist('days')
+        mornings = request.POST.getlist('morning')
+        afternoons = request.POST.getlist('afternoon')
+        evenings = request.POST.getlist('evening')
+        nights = request.POST.getlist('night')
+        sign = request.FILES.get('signature_image')
+        prescription = Prescription(
+            doctor=doctor,
+            patient=patientprofile,
+            signature=sign,
+        )
+        prescription.save()
+        print(prescription_items)
+        print(quantities)
+        print(days)
+        print(mornings)
+        print(afternoons)
+        print(evenings)
+        print(nights)
+        print(request.POST.get('description'))
+        for item, quantity, day, m, a, e, n in zip(prescription_items, quantities, days, mornings, afternoons, evenings, nights):
+            print(item, quantity, day, m, a, e, n)
+            PrescriptionItem.objects.create(
+                prescription=prescription,
+                name=item,
+                quantity=quantity,
+                days=day,
+                morning=m,
+                afternoon=a,
+                evening=e,
+                night=n,
+            )
+    context = {
+        'patientprofile': patientprofile,
+        'doctor': doctor,
+        'clinic': clinic,
+        'today': today,
+    }
+    return render(request, 'medical/add_prescription.html', context)

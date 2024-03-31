@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Invoice View</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Invoice View</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="invoice-content">
+                    <div class="invoice-item">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="invoice-logo">
+                                    <img src="{% static 'assets/img/logo.png' %}" alt="logo">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="invoice-details">
+                                    <strong>Order:</strong> #{{order.id}} <br>
+                                    <strong>Issued:</strong> {{order.issue_date}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Invoice Item -->
+                    <div class="invoice-item">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="invoice-info">
+                                    <strong class="customer-text">Invoice From</strong>
+                                    <p class="invoice-details invoice-details-two">
+                                        Dr. {{order.doctor_profile.user.get_full_name}} <br>
+                                        {{order.doctor_profile.user.address_line_1}},<br>
+                                        {{order.doctor_profile.user.city}}, {{order.doctor_profile.user.state}}, {{order.doctor_profile.user.country}} <br>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="invoice-info invoice-info2">
+                                    <strong class="customer-text">Invoice To</strong>
+                                    <p class="invoice-details">
+                                        {{order.first_name}} {{order.last_name}}<br>
+                                        {{order.billing_address}} <br>
+                                         <br>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Invoice Item -->
+                    
+                    <!-- Invoice Item -->
+                    <div class="invoice-item">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="invoice-info">
+                                    <strong class="customer-text">Payment Method</strong>
+                                    <p class="invoice-details invoice-details-two">
+                                        {{order.payment_method}} <br>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Invoice Item -->
+                    
+                    <!-- Invoice Item -->
+                    <div class="invoice-item invoice-table-wrap">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="invoice-table table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th class="text-right">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{order.description}}</td>
+                                                <td class="text-right">₹{{amount}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xl-4 ml-auto">
+                                <div class="table-responsive">
+                                    <table class="invoice-table-two table">
+                                        <tbody>
+                                        <tr>
+                                            <th>Tax:</th>
+                                            <td><span>₹{{order.tax}}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total Amount:</th>
+                                            <td><span>₹{{order.total_amount}}</span></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Invoice Item -->
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>		
+<!-- /Page Content -->
+
+{% include 'includes/footer.html' %}
+{% endblock %}
