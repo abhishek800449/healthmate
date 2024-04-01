@@ -612,3 +612,15 @@ def invoices(request):
         'orders': orders,
     }
     return render(request, 'accounts/invoices.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def my_patients(request):
+    doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
+    patients = PatientProfile.objects.filter(appointment__doctor=doctorprofile).distinct()
+    context = {
+        'doctorprofile': doctorprofile,
+        'patients': patients,
+    }
+    return render(request, 'accounts/my_patients.html', context)

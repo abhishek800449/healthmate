@@ -32,7 +32,7 @@ urlpatterns = [
     path('delete_prescription/<int:prescription_id>/', views.delete_prescription, name='delete_prescription'),
     path('view_prescription/<int:id>/', views.view_prescription, name='view_prescription'),
     path('invoices/', views.invoices, name='invoices'),
-    
+    path('my_patients/', views.my_patients, name='my_patients'),
     #path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     #path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
     #path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate, name='resetpassword_validate'),

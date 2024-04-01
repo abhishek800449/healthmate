@@ -36,8 +36,8 @@
                             <span>Appointments</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="my-patients.html">
+                    <li class="{% if '/accounts/my_patients/' == request.path %}active{% endif %}">
+                        <a href="{% url 'my_patients' %}">
                             <i class="fas fa-user-injured"></i>
                             <span>My Patients</span>
                         </a>

@@ -137,7 +137,10 @@ class User(AbstractBaseUser):
     
     def age(self):
         today = date.today()
-        return today.year - self.dob.year - ((today.month, today.day) < (self.dob.month, self.dob.day))
+        try:
+            return today.year - self.dob.year - ((today.month, today.day) < (self.dob.month, self.dob.day))
+        except:
+            return None
 
 
 class Specialization(models.Model):
