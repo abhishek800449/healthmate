@@ -29,6 +29,10 @@ urlpatterns = [
     path('doctor_profile_settings/', views.doctor_profile_settings, name='doctor_profile_settings'),
     path('reviews/', views.reviews, name='reviews'),
     path('view_patient/<str:patient_username>/add_prescription/', views.add_prescription, name='add_prescription'),
+    path('delete_prescription/<int:prescription_id>/', views.delete_prescription, name='delete_prescription'),
+    path('view_prescription/<int:id>/', views.view_prescription, name='view_prescription'),
+    path('invoices/', views.invoices, name='invoices'),
+    
     #path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     #path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
     #path('resetpassword_validate/<uidb64>/<token>/', views.resetpassword_validate, name='resetpassword_validate'),

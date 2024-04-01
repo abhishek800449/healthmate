@@ -283,9 +283,10 @@ class Prescription(models.Model):
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     signature = models.ImageField(upload_to='signatures/')
+    description = models.CharField(max_length=255, null=True)
 
     def __str__(self):
-        return f"Prescription #{self.id}"
+        return f"Prescription#{self.id}"
 
 class PrescriptionItem(models.Model):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE)

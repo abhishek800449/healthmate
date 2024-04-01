@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, UserForm, PatientProfileForm, DoctorProfileForm, MedicalRecordForm, ClinicForm, ClinicGalleryForm
 from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City, ClinicGallery, Clinic, ReviewRating, Prescription, PrescriptionItem
-from appointment.models import Appointment
+from appointment.models import Appointment, Order
 from videoapp.models import RoomDetails
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
@@ -108,6 +108,8 @@ def patient_dashboard(request):
     patientprofile = PatientProfile.objects.get(user_id=request.user.id)
     form = MedicalRecordForm()
     medicals = MedicalRecord.objects.filter(patient=patientprofile)
+    prescriptions = Prescription.objects.filter(patient=patientprofile)
+    orders = Order.objects.filter(patient_profile=patientprofile)
     try:
         appointments = Appointment.objects.filter(patient=patientprofile)       
     except (Appointment.DoesNotExist):
@@ -117,6 +119,8 @@ def patient_dashboard(request):
         'appointments': appointments,
         'medicals': medicals,
         'form': form,
+        'prescriptions': prescriptions,
+        'orders': orders,
     }
     return render(request, 'accounts/patient_dashboard.html', context)
 
@@ -333,6 +337,7 @@ def view_patient(request, patient_username=None):
     patientprofile = PatientProfile.objects.get(user=patient)
     doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
     medicals = MedicalRecord.objects.filter(patient=patientprofile)
+    prescriptions = Prescription.objects.filter(patient=patientprofile)
     form = MedicalRecordForm()
     try:
         appointments = Appointment.objects.filter(patient=patientprofile, doctor=doctorprofile).order_by('date', 'time')
@@ -343,6 +348,7 @@ def view_patient(request, patient_username=None):
         'appointments': appointments,
         'form': form,
         'medicals': medicals,
+        'prescriptions': prescriptions,
     }
     return render(request, 'accounts/view_patient.html', context)
 
@@ -543,22 +549,15 @@ def add_prescription(request, patient_username=None):
         evenings = request.POST.getlist('evening')
         nights = request.POST.getlist('night')
         sign = request.FILES.get('signature_image')
+        description = request.POST.get('description')
         prescription = Prescription(
             doctor=doctor,
             patient=patientprofile,
             signature=sign,
+            description=description,
         )
         prescription.save()
-        print(prescription_items)
-        print(quantities)
-        print(days)
-        print(mornings)
-        print(afternoons)
-        print(evenings)
-        print(nights)
-        print(request.POST.get('description'))
         for item, quantity, day, m, a, e, n in zip(prescription_items, quantities, days, mornings, afternoons, evenings, nights):
-            print(item, quantity, day, m, a, e, n)
             PrescriptionItem.objects.create(
                 prescription=prescription,
                 name=item,
@@ -569,6 +568,7 @@ def add_prescription(request, patient_username=None):
                 evening=e,
                 night=n,
             )
+        messages.success(request, 'Prescription saved successfully.')
     context = {
         'patientprofile': patientprofile,
         'doctor': doctor,
@@ -576,3 +576,39 @@ def add_prescription(request, patient_username=None):
         'today': today,
     }
     return render(request, 'medical/add_prescription.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def delete_prescription(request, prescription_id):
+    prescription = get_object_or_404(Prescription, id=prescription_id)
+    patient = prescription.patient
+    if request.method == 'POST':
+        prescription.delete()
+        messages.success(request, 'Prescription has been deleted.')
+    return redirect('view_patient', patient_username=patient.user.username)
+
+
+@login_required(login_url='login')
+def view_prescription(request, id):
+    prescription = Prescription.objects.get(id=id)
+    prescription_items = PrescriptionItem.objects.filter(prescription=prescription)
+    clinic = Clinic.objects.get(doctor=prescription.doctor)
+    context = {
+        'prescription': prescription,
+        'prescription_items': prescription_items,
+        'clinic': clinic,
+    }
+    return render(request, 'medical/view_prescription.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(is_doctor)
+def invoices(request):
+    doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
+    orders = Order.objects.filter(doctor_profile=doctorprofile).order_by('issue_date')
+    context = {
+        'doctorprofile': doctorprofile,
+        'orders': orders,
+    }
+    return render(request, 'accounts/invoices.html', context)

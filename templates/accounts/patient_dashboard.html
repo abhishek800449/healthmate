@@ -41,7 +41,10 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#pat_prescriptions" data-toggle="tab">Prescriptions</a>
-                                </li>    
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#pat_billing" data-toggle="tab">Billing</a>
+                                </li>
                             </ul>
                         </nav>
                         <!-- /Tab Menu -->
@@ -58,49 +61,56 @@
                             <!-- /Medical Records Tab -->                            
                             <!-- Prescription Tab -->
                             <div class="tab-pane fade" id="pat_prescriptions">
+                                {% include 'medical/prescription.html' %}
+                            </div>
+                            <!-- /Prescription Tab -->
+                            <!-- Billing Tab -->
+                            <div id="pat_billing" class="tab-pane fade">
                                 <div class="card card-table mb-0">
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table class="table table-hover table-center mb-0">
                                                 <thead>
                                                     <tr>
-                                                        <th>Date </th>
-                                                        <th>Name</th>									
-                                                        <th>Created by </th>
+                                                        <th>Invoice No</th>
+                                                        <th>Doctor</th>
+                                                        <th>Amount</th>
+                                                        <th>Paid On</th>
                                                         <th></th>
-                                                    </tr>     
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
+                                                    {% for order in orders %}
                                                     <tr>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td>
+                                                            <a href="{% url 'view_invoice' order.id %}" target="_blank">#INV-{{order.id}}</a>
+                                                        </td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-                                                                    <img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-01.jpg" alt="User Image">
+                                                                <a href="{{order.doctor_profile.get_url}}" class="avatar avatar-sm mr-2">
+                                                                    <img class="avatar-img rounded-circle" src="{{order.doctor_profile.user.profile_picture.url}}" alt="User Image">
                                                                 </a>
-                                                                <a href="doctor-profile.html"><span></span></a>
+                                                                <a href="{{order.doctor_profile.get_url}}">{{order.doctor_profile.user.get_full_name}} <span>{{order.doctor_profile.specialization}}</span></a>
                                                             </h2>
                                                         </td>
+                                                        <td>₹{{order.total_amount}}</td>
+                                                        <td>{{order.issue_date}}</td>
                                                         <td class="text-right">
                                                             <div class="table-action">
-                                                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
-                                                                    <i class="fas fa-print"></i> Print
-                                                                </a>
-                                                                <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                                                                <a href="{% url 'view_invoice' order.id %}" target="_blank" class="btn btn-sm bg-info-light">
                                                                     <i class="far fa-eye"></i> View
                                                                 </a>
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    
-                                                </tbody>	
+                                                    {% endfor %}
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- /Prescription Tab -->
+                            <!-- /Billing Tab -->
                         </div>
                         <!-- Tab Content -->                       
                     </div>
