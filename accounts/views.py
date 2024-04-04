@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, UserForm, PatientProfileForm, DoctorProfileForm, MedicalRecordForm, ClinicForm, ClinicGalleryForm
 from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country, State, City, ClinicGallery, Clinic, ReviewRating, Prescription, PrescriptionItem
-from appointment.models import Appointment, Order
+from appointment.models import Appointment
+from orders.models import Order
 from videoapp.models import RoomDetails
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,6 @@ from django.utils import timezone
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse, JsonResponse
 from datetime import date
-import re
 
 # Create your views here.
 

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'videoapp',
     'accounts',
     'appointment',
+    'orders',
 ]
 
 MIDDLEWARE = [

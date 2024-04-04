@@ -26,7 +26,7 @@
     
         <div class="row justify-content-center">
             <div class="col-lg-6">
-            
+                {% if appointment %}
                 <!-- Success Card -->
                 <div class="card success-card">
                     <div class="card-body">
@@ -39,7 +39,20 @@
                     </div>
                 </div>
                 <!-- /Success Card -->
-                
+                {% else %}
+                <!-- Success Card -->
+                <div class="card success-card">
+                    <div class="card-body">
+                        <div class="success-cont">
+                            <i class="fas fa-check"></i>
+                            <h3>Consultation booked Successfully!</h3>
+                            <br>
+                            <a href="{% url 'meeting' %}" class="btn btn-primary view-inv-btn">Consult now</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Success Card -->
+                {% endif %}
             </div>
         </div>
         

@@ -188,6 +188,10 @@ class DoctorProfile(models.Model):
             count = int(reviews['count'])
         return count
 
+    def clinic_address(self):
+        clinic = Clinic.objects.get(doctor=self)
+        return f"{clinic.clinic_name}, {clinic.address}, {clinic.clinic_city}, {clinic.clinic_state}, {clinic.clinic_country}"
+
 
 class Clinic(models.Model):
     doctor = models.OneToOneField(DoctorProfile, on_delete=models.CASCADE, null=True)

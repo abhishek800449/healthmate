@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Appointment, TimeSlot, PendingAppointment, Order
+from .models import Appointment, TimeSlot, PendingAppointment
 
 # Register your models here.
 
@@ -9,4 +9,3 @@ class TimeSlotAdmin(admin.ModelAdmin):
 admin.site.register(TimeSlot, TimeSlotAdmin)
 admin.site.register(Appointment)
 admin.site.register(PendingAppointment)
-admin.site.register(Order)

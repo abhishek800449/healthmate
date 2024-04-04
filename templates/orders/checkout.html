@@ -30,7 +30,7 @@
                     <div class="card-body">
                     
                         <!-- Checkout Form -->
-                        <form method="POST" action="{% url 'booking_success' %}">
+                        <form method="POST" action="{% if single_doctor %}{% url 'booking_success' %} {% else %} {% url 'booking' specialization.slug %} {% endif %}">
                         {% csrf_token %}
                             <!-- Personal Information -->
                             <div class="info-widget">
@@ -128,29 +128,43 @@
                         <h4 class="card-title">Booking Summary</h4>
                     </div>
                     <div class="card-body">
-                    
-                        <!-- Booking Doctor Info -->
-                        <div class="booking-doc-info">
-                            <a href="doctor-profile.html" class="booking-doc-img">
-                                <img src="{{single_doctor.user.profile_picture.url}}" alt="User Image">
+                        {% if single_doctor %}
+                            <!-- Booking Doctor Info -->
+                            <div class="booking-doc-info">
+                                <a href="doctor-profile.html" class="booking-doc-img">
+                                    <img src="{{single_doctor.user.profile_picture.url}}" alt="User Image">
+                                </a>
+                                <div class="booking-info">
+                                    <h4><a href="doctor-profile.html">Dr. {{single_doctor.user.get_full_name}}</a></h4>
+                                    <div class="rating">
+                                        <i class="fas fa-star {% if single_doctor.averageReview >= 1.0 %} filled {% endif %}"></i>
+                                        <i class="fas fa-star {% if single_doctor.averageReview >= 2.0 %} filled {% endif %}"></i>
+                                        <i class="fas fa-star {% if single_doctor.averageReview >= 3.0 %} filled {% endif %}"></i>
+                                        <i class="fas fa-star {% if single_doctor.averageReview >= 4.0 %} filled {% endif %}"></i>
+                                        <i class="fas fa-star {% if single_doctor.averageReview >= 5.0 %} filled {% endif %}"></i>
+                                        <span class="d-inline-block average-rating">({{single_doctor.countReview}})</span>
+                                    </div>
+                                    <div class="clinic-details">
+                                        <p class="doc-location"><i class="fas fa-map-marker-alt"></i>{{clinic.get_clinic_address}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Booking Doctor Info -->
+                        {% else %}
+                        <!-- Booking Info -->
+                        <div class="booking-doc-info mb-4">
+                            <a href="{{specialization.get_url}}" class="booking-doc-img">
+                                <img src="{{specialization.image.url}}" alt="User Image">
                             </a>
                             <div class="booking-info">
-                                <h4><a href="doctor-profile.html">Dr. {{single_doctor.user.get_full_name}}</a></h4>
-                                <div class="rating">
-                                    <i class="fas fa-star {% if single_doctor.averageReview >= 1.0 %} filled {% endif %}"></i>
-                                    <i class="fas fa-star {% if single_doctor.averageReview >= 2.0 %} filled {% endif %}"></i>
-                                    <i class="fas fa-star {% if single_doctor.averageReview >= 3.0 %} filled {% endif %}"></i>
-                                    <i class="fas fa-star {% if single_doctor.averageReview >= 4.0 %} filled {% endif %}"></i>
-                                    <i class="fas fa-star {% if single_doctor.averageReview >= 5.0 %} filled {% endif %}"></i>
-                                    <span class="d-inline-block average-rating">({{single_doctor.countReview}})</span>
-                                </div>
+                                <h4>Booking Consultation</h4>
                                 <div class="clinic-details">
-                                    <p class="doc-location"><i class="fas fa-map-marker-alt"></i>{{clinic.get_clinic_address}}</p>
+                                    <p class="doc-location">{{specialization}}</p>
                                 </div>
                             </div>
                         </div>
-                        <!-- Booking Doctor Info -->
-                        
+                        <!-- Booking Info -->
+                        {% endif %}
                         <div class="booking-summary">
                             <div class="booking-item-wrap">
                                 <ul class="booking-date">
@@ -158,7 +172,7 @@
                                     <li>Selected Time <span>{{selected_timeslot}}</span></li>
                                 </ul>
                                 <ul class="booking-fee">
-                                    <li>Consulting Fee <span>₹{{single_doctor.price}}</span></li>
+                                    <li>Consulting Fee <span>₹{{fee}}</span></li>
                                     <li>Booking Fee <span>₹{{tax}}</span></li>
                                 </ul>
                                 <div class="booking-total">
