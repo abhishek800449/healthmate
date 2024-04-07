@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-12 col-12">
+                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Booking Lab Test</li>
+                    </ol>
+                </nav>
+                <h2 class="breadcrumb-title">Booking Lab Test</h2>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- /Breadcrumb -->
+
+<!-- Page Content -->
+<div class="content">
+    <div class="container">   
+        <div class="row">
+
+            <div class="col-md-5 col-lg-4 theiaStickySidebar">						
+                <div class="card flex-fill">
+                    <img alt="Card Image" src="{% static 'assets/img/Empty.png' %}" class="card-img-top" style="height: 100%;">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0"></h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"></p>
+                    </div>
+                    <div class="card-footer text-muted">
+                    </div>
+                </div>                
+            </div>
+
+            <div class="col-md-7 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                    
+                        <div class="card-title">
+                            <h3>Book A Home Visit</h3>
+                            <p style="color:grey;">
+                                We are continually harnessing our medical expertise to build best test offering while investing in technology to transform the delivery of health care.
+                            </p>
+                        </div>
+                        
+                        <!-- Checkout Form -->
+                        <form action="{% url 'lab_checkout' %}" method="POST">
+                        {% csrf_token %}  
+                            <!-- Booking Information -->
+                            <h4 class="card-title">Booking Details</h4>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group card-label">
+                                        <label> Select Service</label>
+                                        {{lab_form.lab_test}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group card-label">
+                                        <label>City</label>
+                                        {{lab_form.city}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group card-label">
+                                        <label>Date</label>
+                                        {{lab_form.appointment_date}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group card-label">
+                                        <label>Time</label>
+                                        {{lab_form.appointment_time}}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Booking Information -->
+
+                            <!-- Personal Information -->
+                            <h4 class="card-title">Personal Information</h4>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group card-label">
+                                        <label>Full Name</label>
+                                        {{lab_form.full_name}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group card-label">
+                                        <label>Phone</label>
+                                        {{lab_form.phone_number}}
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group card-label">
+                                        <label>Street address</label>
+                                        {{lab_form.address}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group card-label">
+                                        <label>Zip Code</label>
+                                        {{lab_form.zip_code}}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Personal Information -->
+                                                            
+                            <!-- Submit Section -->
+                            <div class="submit-section mt-4">
+                                <button type="submit" class="btn btn-info submit-btn" style="width:100%">Book your visit</button>
+                            </div>
+                            <!-- /Submit Section -->
+                                
+                        </form>
+                        <!-- /Checkout Form -->
+                        
+                    </div>
+                </div>                
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+
+{% include 'includes/footer.html' %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#id_lab_test').change(function () {  // Change to match the actual ID of your country select input
+            var labTestId = $(this).val();
+            $.ajax({
+                url: '{% url "get_test_details" %}',
+                data: { 'lab_test_id': labTestId },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    if (data) {
+                        $('.card-img-top').attr('src', data.image);
+                        $('.card-title h5').text(data.name);  
+                        $('.card-text').text(data.description);
+                        $('.card-footer').text('₹ ' + data.price);  // Update lab test price
+                        // Add other details as needed
+                    } else {
+                        console.error('Error: Test details not found');
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

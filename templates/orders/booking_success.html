@@ -39,6 +39,19 @@
                     </div>
                 </div>
                 <!-- /Success Card -->
+                {% elif lab_booking %}
+                <!-- Success Card -->
+                <div class="card success-card">
+                    <div class="card-body">
+                        <div class="success-cont">
+                            <i class="fas fa-check"></i>
+                            <h3>Home visit booked Successfully!</h3>
+                            <p>Appointment booked for <strong>{{lab_booking.lab_test.name}}</strong><br> on <strong>{{lab_booking.appointment_date}} at {{lab_booking.appointment_time}}</strong></p>
+                            <a href="{% url 'view_invoice' order.id %}" class="btn btn-primary view-inv-btn">View Invoice</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Success Card -->
                 {% else %}
                 <!-- Success Card -->
                 <div class="card success-card">

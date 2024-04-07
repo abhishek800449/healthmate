@@ -85,6 +85,7 @@
                                                         <td>
                                                             <a href="{% url 'view_invoice' order.id %}" target="_blank">#INV-{{order.id}}</a>
                                                         </td>
+                                                        {% if order.doctor_profile %}
                                                         <td>
                                                             <h2 class="table-avatar">
                                                                 <a href="{{order.doctor_profile.get_url}}" class="avatar avatar-sm mr-2">
@@ -93,6 +94,16 @@
                                                                 <a href="{{order.doctor_profile.get_url}}">{{order.doctor_profile.user.get_full_name}} <span>{{order.doctor_profile.specialization}}</span></a>
                                                             </h2>
                                                         </td>
+                                                        {% else %}
+                                                        <td>
+                                                            <h2 class="table-avatar">
+                                                                <a href="{{order.doctor_profile.get_url}}" class="avatar avatar-sm mr-2">
+                                                                    <img class="avatar-img rounded-circle" src="{% static 'assets/img/favicon.png' %}" alt="User Image">
+                                                                </a>
+                                                                <a>HealthMate</a>
+                                                            </h2>
+                                                        </td>
+                                                        {% endif %}
                                                         <td>₹{{order.total_amount}}</td>
                                                         <td>{{order.issue_date}}</td>
                                                         <td class="text-right">

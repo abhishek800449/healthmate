@@ -15,8 +15,8 @@
 				<!-- Search -->
 				<div class="search-box">
 					<form action="{% url 'search' %}">
-						<div class="form-group search-location" method='GET'>
-							<button type="button" class="btn btn-block btn-outline-info">Book a Lab Test</button>
+						<div class="form-group search-location">
+							<a class="btn btn-primary btn-block" href="{% url 'booking_test' %}">Book a Lab Test</a>
 							<span class="form-text">Based on your Location</span>
 						</div>
 						<div class="form-group search-info">
@@ -47,8 +47,8 @@
 					
 						{% for specialization in specializations %}
 						<!-- Slider Item -->
-						<div class="card speicality-item text-center">
-							<div class="card-body">
+						<div class="speicality-item text-center">
+							<!--div class="card-body"-->
 								<a href={{specialization.get_url}}>
 									<div class="speicality-img">
 										<img src="{{specialization.image.url}}" class="img-fluid" alt="Speciality">
@@ -60,7 +60,7 @@
 										<span class="doc-department">Consult now ></span>
 									</a>
 								</p>
-							</div>
+							<!--/div-->
 						</div>	
 						<!-- /Slider Item -->
 						{% endfor %}
@@ -73,6 +73,104 @@
 		</div>   
 	</section>	
 	<!-- Clinic and Specialities -->
+
+	<!-- Popular Section -->
+	<section class="section section-doctor">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="section-header ">
+						<h2>Book Our Doctor</h2>
+						<p>Lorem Ipsum is simply dummy text </p>
+					</div>
+					<div class="about-content">
+						<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum.</p>
+						<p>web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes</p>
+						<a href="{% url 'doctors_list' %}">View all Doctors..</a>
+					</div>
+				</div>
+				<div class="col-lg-8">
+					<div class="doctor-slider slider">
+						{% for doctor in doctors %}
+						<!-- Doctor Widget -->
+						<div class="profile-widget">
+							<div class="doc-img" style="height: 150px;">
+								<a href="{{doctor.get_url}}">
+									<img class="img-fluid" alt="User Image" src="{{doctor.user.profile_picture.url}}">
+								</a>
+								</a>
+							</div>
+							<div class="pro-content">
+								<h3 class="title">
+									<a href="{{doctor.get_url}}">{{doctor.user.get_full_name}}</a> 
+									<i class="fas fa-check-circle verified"></i>
+								</h3>
+								<p class="speciality">{{doctor.specialization}}</p>
+								<div class="rating">
+									<i class="fas fa-star {% if doctor.averageReview >= 1.0 %} filled {% endif %}"></i>
+									<i class="fas fa-star {% if doctor.averageReview >= 2.0 %} filled {% endif %}"></i>
+									<i class="fas fa-star {% if doctor.averageReview >= 3.0 %} filled {% endif %}"></i>
+									<i class="fas fa-star {% if doctor.averageReview >= 4.0 %} filled {% endif %}"></i>
+									<i class="fas fa-star {% if doctor.averageReview >= 5.0 %} filled {% endif %}"></i>
+									<span class="d-inline-block average-rating">({{doctor.countReview}})</span>
+								</div>
+								<ul class="available-info">
+									<li>
+										<i class="fas fa-map-marker-alt"></i> {{doctor.clinic_address}}
+									</li>
+									<li>
+										<i class="far fa-money-bill-alt"></i> ₹ {{doctor.price}} 
+										<i class="fas fa-info-circle" data-toggle="tooltip" title="Booking charges"></i>
+									</li>
+								</ul>
+								<div class="row row-sm">
+									<div class="col-6">
+										<a href="{{doctor.get_url}}" class="btn view-btn">View Profile</a>
+									</div>
+									<div class="col-6">
+										<a href="{{doctor.get_appointment_url}}" class="btn book-btn">Book Now</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /Doctor Widget -->
+						{% endfor %}											
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- /Popular Section -->
+	
+	<!-- Availabe Features -->
+	<section class="section section-features">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-5 features-img">
+					<img src="{% static 'assets/img/features/feature.png' %}" class="img-fluid" alt="Feature">
+				</div>
+				<div class="col-md-7">
+					<div class="section-header">	
+						<h2 class="mt-2">Availabe Lab Tests</h2>
+						<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </p>
+					</div>	
+					<div class="features-slider slider">
+						{% for test in lab_tests %}
+						<!-- Slider Item -->
+						<div class="feature-item text-center">
+							<a href={% url 'booking_test' %}>
+							<img src="{{test.image.url}}" alt="Feature">
+							<p>{{test.name}}<br>₹ {{test.price}}</p>
+							</a>
+						</div>
+						<!-- /Slider Item -->
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>		
+	<!-- Availabe Features -->
 			
 {% include 'includes/footer.html' %}
 {% endblock %}

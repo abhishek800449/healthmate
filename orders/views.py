@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from accounts.models import DoctorProfile, PatientProfile, Clinic, ReviewRating, Specialization
+from accounts.models import DoctorProfile, PatientProfile, Clinic, ReviewRating, Specialization, City
 from appointment.models import PendingAppointment, TimeSlot, Appointment
 from videoapp.models import RoomDetails
 from .models import Order
 from django.utils import timezone
 from datetime import datetime
+from labs.forms import LabTestBookingForm
+from labs.models import LabTest, LabTestBooking, PendingLabBooking
 
 # Create your views here.
 
@@ -159,8 +161,107 @@ def booking(request, specialization_slug=None):
             payment_method=payment_method,
             patient_profile=patient,
             tax=tax,
-            total_amount=total_amount,
+            total=total_amount,
             description='Online Appointment'
         )
         order.save()
         return render(request, 'orders/booking_success.html')
+    
+
+@login_required(login_url='login')
+def lab_checkout(request):
+    if request.method == 'POST':
+        form = LabTestBookingForm(request.POST)
+        patientprofile = get_object_or_404(PatientProfile, user=request.user)
+        if form.is_valid():
+            full_name = request.POST.get('full_name')
+            address = request.POST.get('address')
+            zip = request.POST.get('zip_code')
+            phone = request.POST.get('phone_number')
+            date = request.POST.get('appointment_date')
+            time = request.POST.get('appointment_time')
+            city_id = request.POST.get('city')
+            city = City.objects.get(id=city_id)
+            test_id = request.POST.get('lab_test')
+            lab_test = LabTest.objects.get(id=test_id)
+            fee = float(lab_test.price)
+            tax = 0.02*fee
+            total = tax+fee        
+            pending, created = PendingLabBooking.objects.get_or_create(
+            patient=patientprofile,
+            defaults={
+                'full_name': full_name,
+                'lab_test': lab_test,
+                'appointment_date': date,
+                'appointment_time': time,
+                'phone_number': phone,
+                'address': address,
+                'city': city,
+                'zip_code': zip,
+                }
+            )
+            if not created:
+                pending.full_name = full_name
+                pending.lab_test = lab_test
+                pending.appointment_date = date
+                pending.appointment_time = time
+                pending.phone_number = phone
+                pending.address = address
+                pending.city = city
+                pending.zip_code = zip
+                pending.save()
+            context = {
+                'test': lab_test,
+                'selected_date': date,
+                'selected_timeslot': time,
+                'fee': fee,
+                'tax': tax,
+                'total': total,
+            }
+            return  render(request, 'orders/checkout.html', context)
+        
+
+@login_required(login_url='login')
+def lab_success(request):
+    if request.method == 'POST':
+        patientprofile = get_object_or_404(PatientProfile, user=request.user)
+        pending = get_object_or_404(PendingLabBooking, patient=patientprofile)
+        lab_booking = LabTestBooking(
+            patient=patientprofile,
+            full_name=pending.full_name,
+            lab_test=pending.lab_test,
+            appointment_time=pending.appointment_time,
+            appointment_date=pending.appointment_date,
+            phone_number=pending.phone_number,
+            address=pending.address,
+            city=pending.city,
+            zip_code=pending.zip_code,
+        )
+        lab_booking.save()
+        pending.delete()
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        billing_address = request.POST.get('billing_address')
+        payment_method = request.POST.get('payment_method')
+        tax = float(request.POST.get('tax'))
+        total_amount = float(request.POST.get('total_amount'))
+        order = Order(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            phone=phone,
+            billing_address=billing_address,
+            payment_method=payment_method,
+            patient_profile=lab_booking.patient,
+            tax=tax,
+            total_amount=total_amount,
+            description='Lab Appointment'
+        )
+        order.save()
+        context={
+            'lab_booking': lab_booking,
+            'order':order,
+        }
+    return render(request, 'orders/booking_success.html', context)

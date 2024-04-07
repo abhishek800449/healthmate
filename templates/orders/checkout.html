@@ -30,7 +30,7 @@
                     <div class="card-body">
                     
                         <!-- Checkout Form -->
-                        <form method="POST" action="{% if single_doctor %}{% url 'booking_success' %} {% else %} {% url 'booking' specialization.slug %} {% endif %}">
+                        <form method="POST" action="{% if single_doctor %}{% url 'booking_success' %} {% elif specialization %} {% url 'booking' specialization.slug %} {% else %} {% url 'lab_success' %}{% endif %}">
                         {% csrf_token %}
                             <!-- Personal Information -->
                             <div class="info-widget">
@@ -150,7 +150,7 @@
                                 </div>
                             </div>
                             <!-- Booking Doctor Info -->
-                        {% else %}
+                        {% elif specialization %}
                         <!-- Booking Info -->
                         <div class="booking-doc-info mb-4">
                             <a href="{{specialization.get_url}}" class="booking-doc-img">
@@ -160,6 +160,20 @@
                                 <h4>Booking Consultation</h4>
                                 <div class="clinic-details">
                                     <p class="doc-location">{{specialization}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Booking Info -->
+                        {% else %}
+                        <!-- Booking Info -->
+                        <div class="booking-doc-info mb-4">
+                            <a href="{% url 'booking_test' %}" class="booking-doc-img">
+                                <img src="{{test.image.url}}" alt="User Image">
+                            </a>
+                            <div class="booking-info">
+                                <h4>Booking Lab Test</h4>
+                                <div class="clinic-details">
+                                    <p class="doc-location">{{test.name}}</p>
                                 </div>
                             </div>
                         </div>

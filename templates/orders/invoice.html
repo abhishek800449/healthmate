@@ -49,11 +49,19 @@
                             <div class="col-md-6">
                                 <div class="invoice-info">
                                     <strong class="customer-text">Invoice From</strong>
+                                    {% if order.doctor_profile %}
                                     <p class="invoice-details invoice-details-two">
                                         Dr. {{order.doctor_profile.user.get_full_name}} <br>
                                         {{order.doctor_profile.user.address_line_1}},<br>
                                         {{order.doctor_profile.user.city}}, {{order.doctor_profile.user.state}}, {{order.doctor_profile.user.country}} <br>
                                     </p>
+                                    {% else %}
+                                    <p class="invoice-details invoice-details-two">
+                                        Healthmate <br>
+                                        Plot no 4 And 5,<br>
+                                        Lucknow, UP, India <br>
+                                    </p>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-md-6">
