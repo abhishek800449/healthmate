@@ -11,6 +11,7 @@ from django.contrib import messages
 def doctors_list(request, specialization_slug=None):
     specialization = None
     doctors = None
+    specialization_list = Specialization.objects.all()
 
     if specialization_slug != None:
         specialization = get_object_or_404(Specialization, slug=specialization_slug)
@@ -23,6 +24,28 @@ def doctors_list(request, specialization_slug=None):
     context ={
         'doctors':doctors,
         'doctors_count': doctors_count,
+        'specialization_list': specialization_list,
+    }
+    return render(request, 'appointments/doctors_list.html', context)
+
+
+def filter_results(request):
+    gender_type = request.GET.getlist('gender_type')
+    select_specialist = request.GET.getlist('select_specialist')
+    specialization_list = Specialization.objects.all()
+
+    doctors = DoctorProfile.objects.all()
+    if gender_type:
+        doctors = doctors.filter(user__gender__in=gender_type)
+    if select_specialist:
+        doctors = doctors.filter(specialization__in=select_specialist)
+    doctors_count = doctors.count()
+    context = {
+        'doctors': doctors,
+        'doctors_count': doctors_count,
+        'specialization_list': specialization_list,
+        'last_gender_type': gender_type,
+        'last_specialist': select_specialist,
     }
     return render(request, 'appointments/doctors_list.html', context)
 
@@ -60,6 +83,7 @@ def book_appointment(request,specialization_slug=None, doctor_slug=None):
 
 
 def search(request):
+    specialization_list = Specialization.objects.all()
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
         if keyword:
@@ -77,10 +101,12 @@ def search(request):
     context ={
         'doctors':doctors,
         'doctors_count': doctors_count,
+        'specialization_list': specialization_list,
     }
     return render(request, 'appointments/doctors_list.html', context)
 
 
+@login_required(login_url='login')
 def submit_review(request, doctor_id):
     url = request.META.get('HTTP_REFERER')
     if request.method == 'POST':

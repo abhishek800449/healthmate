@@ -11,6 +11,14 @@ class Appointment(models.Model):
     status = models.CharField(max_length=20, default='pending')
     type = models.CharField(max_length=20, null=True)
 
+    def order_details(self):
+        try:
+            from orders.models import Order
+            order = Order.objects.get(appointment=self)
+            return order
+        except:
+            return 0
+
 
 class TimeSlot(models.Model):
     DAYS_OF_WEEK = [

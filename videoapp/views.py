@@ -25,9 +25,6 @@ def join_room(request):
         patient = PatientProfile.objects.get(user=user)
         room = RoomDetails.objects.get(patient=patient)
         doctor = DoctorProfile.objects.get(user=request.user)
-        order = Order.objects.get(patient_profile=patient, doctor_profile__isnull=True)
-        order.doctor_profile= doctor
-        order.save()
         appointment = Appointment(
             patient=patient,
             doctor=doctor,
@@ -37,6 +34,10 @@ def join_room(request):
             type='online'
         )
         appointment.save()
+        order = Order.objects.get(patient_profile=patient, doctor_profile__isnull=True, description='Online Appointment')
+        order.doctor_profile= doctor
+        order.appointment = appointment
+        order.save()
         room.delete()
         return redirect("/consult/meeting?roomID=" + roomID)
     return render(request, 'videoapp/joinroom.html')

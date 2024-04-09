@@ -4,6 +4,7 @@ from .models import User, PatientProfile, DoctorProfile, MedicalRecord, Country,
 from appointment.models import Appointment
 from orders.models import Order
 from videoapp.models import RoomDetails
+from labs.models import LabTestBooking
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from appointment.models import TimeSlot
@@ -11,6 +12,8 @@ from django.utils import timezone
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse, JsonResponse
 from datetime import date
+from django.db.models import Case, When, Value
+from django.db import models
 
 # Create your views here.
 
@@ -109,7 +112,7 @@ def patient_dashboard(request):
     form = MedicalRecordForm()
     medicals = MedicalRecord.objects.filter(patient=patientprofile)
     prescriptions = Prescription.objects.filter(patient=patientprofile)
-    orders = Order.objects.filter(patient_profile=patientprofile)
+    orders = Order.objects.filter(patient_profile=patientprofile).order_by('-issue_date')
     try:
         appointments = Appointment.objects.filter(patient=patientprofile)       
     except (Appointment.DoesNotExist):
@@ -128,8 +131,18 @@ def patient_dashboard(request):
 @login_required(login_url='login')
 def my_appointments(request):
     patientprofile = PatientProfile.objects.get(user_id=request.user.id)
+
+    status_order = Case(
+        When(status='confirmed', then=Value(1)),
+        When(status='pending', then=Value(2)),
+        When(status='cancelled', then=Value(3)),
+        When(status='complete', then=Value(4)),
+        default=Value(5),  # Fallback for any other status
+        output_field=models.IntegerField()
+    )
+    
     try:
-        appointments = Appointment.objects.filter(patient=patientprofile)       
+        appointments = Appointment.objects.filter(patient=patientprofile).order_by('date', 'time', status_order)    
     except (Appointment.DoesNotExist):
         appointments = None
     context = {
@@ -624,3 +637,13 @@ def my_patients(request):
         'patients': patients,
     }
     return render(request, 'accounts/my_patients.html', context)
+
+
+@login_required(login_url='login')
+def view_labs(request):
+    patient = PatientProfile.objects.get(user=request.user)
+    labs = LabTestBooking.objects.filter(patient=patient)
+    context = {
+        'labs': labs,
+    }
+    return render(request, 'labs/my_labs.html', context)

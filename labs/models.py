@@ -27,6 +27,14 @@ class LabTestBooking(models.Model):
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     zip_code = models.CharField(max_length=20)
 
+    def order_id(self):
+        try:
+            from orders.models import Order
+            order = Order.objects.get(lab=self)
+            return order.id
+        except:
+            return 0
+
 
 class PendingLabBooking(models.Model):
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE)

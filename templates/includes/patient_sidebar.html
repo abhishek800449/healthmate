@@ -30,6 +30,12 @@
                             <span>Appointments</span>
                         </a>
                     </li>
+                    <li class="{% if '/accounts/view_labs/' == request.path %}active{% endif %}">
+                        <a href="{% url 'view_labs' %}">
+                            <i class="fas fa-calendar"></i>
+                            <span>View Lab Appointments</span>
+                        </a>
+                    </li>
                     <li class="{% if '/accounts/patient_profile/' == request.path %}active{% endif %}">
                         <a href="{% url 'patient_profile' %}">
                             <i class="fas fa-user-cog"></i>

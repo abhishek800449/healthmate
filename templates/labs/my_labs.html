@@ -19,6 +19,7 @@
     </div>
 </div>
 <!-- /Breadcrumb -->
+
 <!-- Page Content -->
 <div class="content">
     <div class="container-fluid">
@@ -27,7 +28,7 @@
             <div class="col-md-7 col-lg-8 col-xl-9">
             <div class="row">
                 {% include 'includes/alerts.html' %}
-                <div class="col-md-12"><h2 class="mb-4">My Appoinments</h2>
+                <div class="col-md-12"><h2 class="mb-4">Lab Appoinments</h2>
                 </div>
             </div>
             <div class="row">
@@ -36,48 +37,43 @@
                         <table class="table table-hover table-center mb-0">
                             <thead>
                                 <tr>
-                                    <th>Doctor</th>
+                                    <th>Lab Test</th>
                                     <th>Appt Date</th>
                                     <th>Booking Date</th>
-                                    <th>Amount Paid</th>
                                     <th>Status</th>
                                     <th class="text-right">View Invoice</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for appointment in appointments%}
+                                {% for lab in labs%}
                                 <tr>
                                     <td>
                                         <h2 class="table-avatar">
-                                            <a href="{{appointment.doctor.get_url}}" class="avatar avatar-sm mr-2">
-                                                <img class="avatar-img rounded-circle" src="{{appointment.doctor.user.profile_picture.url}}" alt="User">
+                                            <a href="" class="avatar avatar-sm mr-2">
+                                                <img class="avatar-img rounded-circle" src="{{lab.lab_test.image.url}}" alt="User">
                                             </a>
-                                            <a href="{{appointment.doctor.get_url}}">Dr. {{appointment.doctor.user.get_full_name}}
-                                                <span>{{appointment.doctor.specialization}}</span>
+                                            <a href="">{{lab.lab_test.name}}
                                             </a>
                                         </h2>
                                     </td>
-                                    <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
-                                    {% with order=appointment.order_details %}
-                                    <td>{{order.issue_date}}</td>
-                                    <td>₹{{order.total_amount}}</td>                                    
+                                    <td>{{lab.appointment_date}}<span class="d-block text-info">{{lab.appointment_time}}</span></td>
+                                    <td>{{lab.booking_date}}</td>
                                     <td>
-                                        {% if appointment.status == 'confirmed' or appointment.status == 'complete' %}
-                                            <span class="badge badge-pill bg-success-light">{{ appointment.status }}</span>
-                                        {% elif appointment.status == 'pending' %}
-                                            <span class="badge badge-pill bg-warning-light">{{ appointment.status }}</span>
-                                        {% elif appointment.status == 'cancelled' %}
-                                            <span class="badge badge-pill bg-danger-light">{{ appointment.status }}</span>
+                                        {% if lab.status == 'confirmed' %}
+                                            <span class="badge badge-pill bg-success-light">{{ lab.status }}</span>
+                                        {% elif lab.status == 'pending' %}
+                                            <span class="badge badge-pill bg-warning-light">{{ lab.status }}</span>
+                                        {% elif lab.status == 'cancelled' %}
+                                            <span class="badge badge-pill bg-danger-light">{{ lab.status }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-right">
                                         <div class="table-action">
-                                            <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light" target="_blank">
+                                            <a href="{% url 'view_invoice' lab.order_id %}" class="btn btn-sm bg-info-light" target="_blank">
                                                 <i class="far fa-eye"></i> View
                                             </a>
                                         </div>
                                     </td>
-                                    {% endwith %}
                                 </tr>
                                 {% endfor %}
                             </tbody>

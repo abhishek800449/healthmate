@@ -89,7 +89,8 @@ def booking_success(request):
             patient_profile=appointment.patient,
             tax=tax,
             total_amount=total_amount,
-            description='Offline Appointment'
+            description='Offline Appointment',
+            appointment = appointment
         )
         order.save()
         context={
@@ -161,7 +162,7 @@ def booking(request, specialization_slug=None):
             payment_method=payment_method,
             patient_profile=patient,
             tax=tax,
-            total=total_amount,
+            total_amount=total_amount,
             description='Online Appointment'
         )
         order.save()
@@ -257,7 +258,8 @@ def lab_success(request):
             patient_profile=lab_booking.patient,
             tax=tax,
             total_amount=total_amount,
-            description='Lab Appointment'
+            description='Lab Appointment',
+            lab=lab_booking
         )
         order.save()
         context={

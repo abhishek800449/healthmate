@@ -187,6 +187,11 @@ class DoctorProfile(models.Model):
         if reviews['count'] is not None:
             count = int(reviews['count'])
         return count
+    
+    def rating_percentage(self):
+        average_rating = self.averageReview()
+        percentage = (average_rating / 5) * 100
+        return round(percentage, 2)
 
     def clinic_address(self):
         clinic = Clinic.objects.get(doctor=self)
