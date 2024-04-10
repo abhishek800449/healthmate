@@ -44,7 +44,7 @@ class RegistrationForm(forms.ModelForm):
 
 class UserForm(forms.ModelForm):
     profile_picture = forms.ImageField(required=False, error_messages = {'invalid':("Image files only")}, widget=forms.FileInput)
-    dob = forms.DateField(required=False, widget=forms.DateInput)
+    dob = forms.DateField(required=False, widget=forms.TextInput(attrs={"type": "date", "class": "form-control",}))
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'phone_number', 'dob', 'gender', 'profile_picture', 'address_line_1', 'city', 'state', 'country')
@@ -141,7 +141,7 @@ class ClinicForm(forms.ModelForm):
 
 
 class ClinicGalleryForm(forms.ModelForm):
-    images = forms.FileField(widget = forms.TextInput(attrs={
+    images = forms.FileField(required=False, widget = forms.TextInput(attrs={
             "type": "File",
             "class": "form-control",
             "multiple": "True",

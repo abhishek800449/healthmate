@@ -26,29 +26,68 @@
                 </a>
             </div>
             <ul class="main-nav">
-                <li class="active">
+                <li class="{% if '/' == request.path %}active{% endif %}">
                     <a href="{% url 'home' %}">Home</a>
                 </li>
-                <li class="has-submenu">
-                    <a href="#">Doctors <i class="fas fa-chevron-down"></i></a>
-                    <ul class="submenu">
-                        <li><a href="#">Doctor Dashboard</a></li>
-                        <li><a href="#">Doctor Register</a></li>
-                    </ul>
-                </li>	
-                <li class="has-submenu">
-                    <a href="#">Patients <i class="fas fa-chevron-down"></i></a>
-                    <ul class="submenu">
-                        <li><a href="#">Patient Dashboard</a></li>
-                        <li><a href="#">Profile Settings</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#" target="_blank">Admin</a>
-                </li>
-                <li class="login-link">
-                    <a href="login.html">Login / Signup</a>
-                </li>
+                {% if user.id is None %}
+                    <li class="has-submenu {% if '/accounts/doctor_register/' in request.path %}active{% endif %}">
+                        <a href="#">Doctors <i class="fas fa-chevron-down"></i></a>
+                        <ul class="submenu">
+                            <li><a href="{% url 'doctor_register' %}">Doctor Register</a></li>
+                            <li><a href="{% url 'login' %}">Doctor Login</a></li>
+                        </ul>
+                    </li>	
+                    <li class="has-submenu {% if '/accounts/patient_register/' in request.path %}active{% endif %}">
+                        <a href="#">Patients <i class="fas fa-chevron-down"></i></a>
+                        <ul class="submenu">
+                            <li><a href="{% url 'patient_register' %}">Patient Register</a></li>
+                            <li><a href="{% url 'login' %}">Profile Login</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" target="_blank">Admin</a>
+                    </li>
+                    <li class="login-link">
+                        <a href="login.html">Login / Signup</a>
+                    </li>
+                {% else %}
+                    {% if user.is_staff %}
+                        <li class="has-submenu {% if '/accounts/' in request.path %}active{% endif %}">
+                            <a href="#">Doctor <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="{% url 'doctor_dashboard' %}">Doctor Dashboard</a></li>                               
+                                <li><a href="{% url 'my_patients' %}">My Patients</a></li>                               
+                                <li><a href="{% url 'doctor_profile_settings' %}">Profile Settings</a></li>                                
+                                <li><a href="{% url 'change_doctor_password' %}">Change Password</a></li>
+                            </ul>
+                        </li>
+                        <li class="has-submenu">
+                            <a href="#">Appointments <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="{% url 'view_appointments' %}">View Appointments</a></li>
+                                <li><a href="{% url 'view_rooms' %}">Online Consultation</a></li>
+                            </ul>
+                        </li>
+                    {% else %}	
+                        <li class="has-submenu {% if '/accounts/' in request.path %}active{% endif %}">
+                            <a href="#">Patient <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="{% url 'patient_dashboard' %}">Patient Dashboard</a></li>
+                                <li><a href="{% url 'my_appointments' %}">My Appointments</a></li>
+                                <li><a href="{% url 'view_labs' %}">View Lab Appointments</a></li>
+                                <li><a href="{% url 'patient_profile' %}">Profile Settings</a></li>                                
+                                <li><a href="{% url 'change_password' %}">Change Password</a></li>
+                            </ul>
+                        </li>
+                        <li class="has-submenu {% if '/labs/' in request.path %}active{% endif %}">
+                            <a href="#">Diagnostic <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+                                <li><a href="{% url 'booking_test' %}">Book a lab Test</a></li>
+                                
+                            </ul>
+                        </li>
+                    {% endif %}                    
+                {% endif %}
             </ul>		 
         </div>		 
         <ul class="nav header-navbar-rht">
@@ -57,7 +96,7 @@
                     <i class="far fa-hospital"></i>							
                 </div>
                 <div class="header-contact-detail">
-                    <p class="contact-header">Contact</p>
+                    <p class="contact-header">Contact Us</p>
                     <p class="contact-info-header"> +91 99887-76655</p>
                 </div>
             </li>
@@ -85,7 +124,7 @@
                         </div>
                     </div>
                     <a class="dropdown-item" href="{% if user.is_staff %}{% url 'doctor_dashboard' %}{% else %}{% url 'patient_dashboard' %}{% endif %}">Dashboard</a>
-                    <a class="dropdown-item" href="{% if user.is_staff %}{% url 'patient_profile' %}{% else %}{% url 'patient_profile' %}{% endif %}">Profile Settings</a>
+                    <a class="dropdown-item" href="{% if user.is_staff %}{% url 'doctor_profile_settings' %}{% else %}{% url 'patient_profile' %}{% endif %}">Profile Settings</a>
                     <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                 </div>
                 {%endif%}    

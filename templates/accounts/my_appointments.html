@@ -25,66 +25,218 @@
         <div class="row">            
             {% include 'includes/patient_sidebar.html' %}
             <div class="col-md-7 col-lg-8 col-xl-9">
-            <div class="row">
-                {% include 'includes/alerts.html' %}
-                <div class="col-md-12"><h2 class="mb-4">My Appoinments</h2>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-center mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Doctor</th>
-                                    <th>Appt Date</th>
-                                    <th>Booking Date</th>
-                                    <th>Amount Paid</th>
-                                    <th>Status</th>
-                                    <th class="text-right">View Invoice</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for appointment in appointments%}
-                                <tr>
-                                    <td>
-                                        <h2 class="table-avatar">
-                                            <a href="{{appointment.doctor.get_url}}" class="avatar avatar-sm mr-2">
-                                                <img class="avatar-img rounded-circle" src="{{appointment.doctor.user.profile_picture.url}}" alt="User">
-                                            </a>
-                                            <a href="{{appointment.doctor.get_url}}">Dr. {{appointment.doctor.user.get_full_name}}
-                                                <span>{{appointment.doctor.specialization}}</span>
-                                            </a>
-                                        </h2>
-                                    </td>
-                                    <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
-                                    {% with order=appointment.order_details %}
-                                    <td>{{order.issue_date}}</td>
-                                    <td>₹{{order.total_amount}}</td>                                    
-                                    <td>
-                                        {% if appointment.status == 'confirmed' or appointment.status == 'complete' %}
-                                            <span class="badge badge-pill bg-success-light">{{ appointment.status }}</span>
-                                        {% elif appointment.status == 'pending' %}
-                                            <span class="badge badge-pill bg-warning-light">{{ appointment.status }}</span>
-                                        {% elif appointment.status == 'cancelled' %}
-                                            <span class="badge badge-pill bg-danger-light">{{ appointment.status }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="table-action">
-                                            <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light" target="_blank">
-                                                <i class="far fa-eye"></i> View
-                                            </a>
+
+                <div class="row">
+                    {% include 'includes/alerts.html' %}
+                    <div class="col-md-12">
+                        <h3 class="mb-4">My Appoinments</h3>
+                        <div class="appointment-tab">
+                        
+                            <!-- Appointment Tab -->
+                            <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#pending-appointments" data-toggle="tab">Pending</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#confirmed-appointments" data-toggle="tab">Confirmed</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#cancelled-appointments" data-toggle="tab">Complete/Cancelled</a>
+                                </li> 
+                            </ul>
+                            <!-- /Appointment Tab -->
+                            
+                            <div class="tab-content">                            
+                                <!-- Pending Appointment Tab -->
+                                <div class="tab-pane show active" id="pending-appointments">
+                                    <div class="card card-table mb-0">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-center mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Doctor</th>
+                                                            <th>Appt Date</th>
+                                                            <th>Booking Date</th>
+                                                            <th>Amount Paid</th>
+                                                            <th>Status</th>
+                                                            <th class="text-right">View Invoice</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for appointment in appointments%}
+                                                        {% if appointment.status == 'pending' %}
+                                                        <tr>
+                                                            <td>
+                                                                <h2 class="table-avatar">
+                                                                    <a href="{{appointment.doctor.get_url}}" class="avatar avatar-sm mr-2">
+                                                                        <img class="avatar-img rounded-circle" src="{{appointment.doctor.user.profile_picture.url}}" alt="User">
+                                                                    </a>
+                                                                    <a href="{{appointment.doctor.get_url}}">Dr. {{appointment.doctor.user.get_full_name}}
+                                                                        <span>{{appointment.doctor.specialization}}</span>
+                                                                    </a>
+                                                                </h2>
+                                                            </td>
+                                                            <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
+                                                            {% with order=appointment.order_details %}
+                                                            <td>{{order.issue_date}}</td>
+                                                            <td>₹{{order.total_amount}}</td>                                    
+                                                            <td>
+                                                                {% if appointment.status == 'confirmed' or appointment.status == 'complete' %}
+                                                                    <span class="badge badge-pill bg-success-light">{{ appointment.status }}</span>
+                                                                {% elif appointment.status == 'pending' %}
+                                                                    <span class="badge badge-pill bg-warning-light">{{ appointment.status }}</span>
+                                                                {% elif appointment.status == 'cancelled' %}
+                                                                    <span class="badge badge-pill bg-danger-light">{{ appointment.status }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <div class="table-action">
+                                                                    <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light" target="_blank">
+                                                                        <i class="far fa-eye"></i> View
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                            {% endwith %}
+                                                        </tr>
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>		
+                                            </div>
                                         </div>
-                                    </td>
-                                    {% endwith %}
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                    </div>
+                                </div>
+                                <!-- /Pending Appointment Tab -->
+                           
+                                <!-- Confirmed Appointment Tab -->
+                                <div class="tab-pane" id="confirmed-appointments">
+                                    <div class="card card-table mb-0">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-center mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Doctor</th>
+                                                            <th>Appt Date</th>
+                                                            <th>Booking Date</th>
+                                                            <th>Amount Paid</th>
+                                                            <th>Status</th>
+                                                            <th class="text-right">View Invoice</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for appointment in appointments%}
+                                                        {% if appointment.status == 'confirmed' %}
+                                                        <tr>
+                                                            <td>
+                                                                <h2 class="table-avatar">
+                                                                    <a href="{{appointment.doctor.get_url}}" class="avatar avatar-sm mr-2">
+                                                                        <img class="avatar-img rounded-circle" src="{{appointment.doctor.user.profile_picture.url}}" alt="User">
+                                                                    </a>
+                                                                    <a href="{{appointment.doctor.get_url}}">Dr. {{appointment.doctor.user.get_full_name}}
+                                                                        <span>{{appointment.doctor.specialization}}</span>
+                                                                    </a>
+                                                                </h2>
+                                                            </td>
+                                                            <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
+                                                            {% with order=appointment.order_details %}
+                                                            <td>{{order.issue_date}}</td>
+                                                            <td>₹{{order.total_amount}}</td>                                    
+                                                            <td>
+                                                                {% if appointment.status == 'confirmed' or appointment.status == 'complete' %}
+                                                                    <span class="badge badge-pill bg-success-light">{{ appointment.status }}</span>
+                                                                {% elif appointment.status == 'pending' %}
+                                                                    <span class="badge badge-pill bg-warning-light">{{ appointment.status }}</span>
+                                                                {% elif appointment.status == 'cancelled' %}
+                                                                    <span class="badge badge-pill bg-danger-light">{{ appointment.status }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <div class="table-action">
+                                                                    <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light" target="_blank">
+                                                                        <i class="far fa-eye"></i> View
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                            {% endwith %}
+                                                        </tr>
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>		
+                                            </div>	
+                                        </div>	
+                                    </div>	
+                                </div>
+                                <!-- /Confirmed Appointment Tab -->
+
+                                <!-- Cancelled Appointment Tab -->
+                                <div class="tab-pane" id="cancelled-appointments">
+                                    <div class="card card-table mb-0">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-center mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Doctor</th>
+                                                            <th>Appt Date</th>
+                                                            <th>Booking Date</th>
+                                                            <th>Amount Paid</th>
+                                                            <th>Status</th>
+                                                            <th class="text-right">View Invoice</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for appointment in appointments%}
+                                                        {% if appointment.status == 'cancelled' or appointment.status == 'complete' %}
+                                                        <tr>
+                                                            <td>
+                                                                <h2 class="table-avatar">
+                                                                    <a href="{{appointment.doctor.get_url}}" class="avatar avatar-sm mr-2">
+                                                                        <img class="avatar-img rounded-circle" src="{{appointment.doctor.user.profile_picture.url}}" alt="User">
+                                                                    </a>
+                                                                    <a href="{{appointment.doctor.get_url}}">Dr. {{appointment.doctor.user.get_full_name}}
+                                                                        <span>{{appointment.doctor.specialization}}</span>
+                                                                    </a>
+                                                                </h2>
+                                                            </td>
+                                                            <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
+                                                            {% with order=appointment.order_details %}
+                                                            <td>{{order.issue_date}}</td>
+                                                            <td>₹{{order.total_amount}}</td>                                    
+                                                            <td>
+                                                                {% if appointment.status == 'confirmed' or appointment.status == 'complete' %}
+                                                                    <span class="badge badge-pill bg-success-light">{{ appointment.status }}</span>
+                                                                {% elif appointment.status == 'pending' %}
+                                                                    <span class="badge badge-pill bg-warning-light">{{ appointment.status }}</span>
+                                                                {% elif appointment.status == 'cancelled' %}
+                                                                    <span class="badge badge-pill bg-danger-light">{{ appointment.status }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <div class="table-action">
+                                                                    <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light" target="_blank">
+                                                                        <i class="far fa-eye"></i> View
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                            {% endwith %}
+                                                        </tr>
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>		
+                                            </div>	
+                                        </div>	
+                                    </div>	
+                                </div>
+                                <!-- /Cancelled Appointment Tab -->
+                                
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>

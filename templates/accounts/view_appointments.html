@@ -44,16 +44,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="appointment-action mr-5">
+                            {% if appointment.status == 'confirmed' or appointment.status == 'complete' %}
+                                <span class="badge badge-pill bg-success-light">{{ appointment.status }}</span>
+                            {% elif appointment.status == 'pending' %}
+                                <span class="badge badge-pill bg-warning-light">{{ appointment.status }}</span>
+                            {% elif appointment.status == 'cancelled' %}
+                                <span class="badge badge-pill bg-danger-light">{{ appointment.status }}</span>
+                            {% endif %}
+                        </div>
                         <div class="appointment-action">
-                            <a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details">
-                                <i class="far fa-eye"></i> View
-                            </a>
-                            <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-                                <i class="fas fa-check"></i> Accept
-                            </a>
-                            <a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-                                <i class="fas fa-times"></i> Cancel
-                            </a>
+                            {% with order=appointment.order_details %}
+                                <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light" target="_blank">
+                                    <i class="far fa-eye"></i> View Invoice
+                                </a>
+                            {% endwith %}
                         </div>
                     </div>
                     <!-- /Appointment List -->

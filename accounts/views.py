@@ -264,6 +264,7 @@ def doctor_profile_settings(request):
         'gallery': gallery,
         'doctor_profile_form': doctor_profile_form,
         'user_form': user_form,
+        'doctorprofile': doctorprofile,
     }
     return render(request, 'accounts/doctor_profile_settings.html', context)
 
@@ -399,6 +400,7 @@ def change_password(request):
 
 @login_required(login_url='login')
 def change_doctor_password(request):
+    doctorprofile = DoctorProfile.objects.get(user=request.user)
     if request.method == 'POST':
         current_password = request.POST['current_password']
         new_password = request.POST['new_password']
@@ -425,7 +427,10 @@ def change_doctor_password(request):
         else:
             messages.error(request, 'Password does not match!')
             return redirect('change_doctor_password')
-    return render(request, 'accounts/change_doctor_password.html')
+    context = {
+        'doctorprofile': doctorprofile,
+    }
+    return render(request, 'accounts/change_doctor_password.html', context)
 
 
 @login_required
