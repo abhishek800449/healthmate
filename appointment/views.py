@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from accounts.models import Specialization, DoctorProfile, PatientProfile, Clinic, ClinicGallery, ReviewRating
-from .models import TimeSlot
+from .models import TimeSlot, Appointment
 from .forms import ReviewForm
 from datetime import datetime, timedelta
 from django.db.models import Q
@@ -55,11 +55,20 @@ def view_doctor(request,specialization_slug=None, doctor_slug=None):
     clinic = Clinic.objects.get(doctor=single_doctor)
     clinic_images = ClinicGallery.objects.filter(clinic = clinic)
     reviews = ReviewRating.objects.filter(doctor=single_doctor)
+    if request.user.is_authenticated:
+        try:
+            patient = PatientProfile.objects.get(user=request.user)
+            appointment = Appointment.objects.filter(patient=patient ,doctor=single_doctor)
+        except:
+            appointment = None
+    else:
+        appointment = None
     context = {
         'single_doctor': single_doctor,
         'clinic': clinic,
         'clinic_images': clinic_images,
         'reviews': reviews,
+        'appointment': appointment,
     }
     return  render(request, 'appointments/view_doctor.html', context)
 

@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import user_passes_test
 from accounts.forms import RegistrationForm, UserForm
-from accounts.models import User, PatientProfile, DoctorProfile
+from accounts.models import User, PatientProfile, DoctorProfile, Specialization, ReviewRating
 from django.http import JsonResponse
+from django.utils.text import slugify
 
 # Create your views here.
 
@@ -92,7 +93,7 @@ def adminapp_profile(request):
     return render(request, 'adminapp/profile.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='adminapp_login')
 @user_passes_test(is_admin)
 def adminapp_change_password(request):
     if request.method == 'POST':
@@ -170,3 +171,86 @@ def change_status(request):
             return JsonResponse({'success': False, 'message': 'Doctor not found'})
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Doctor not found'})
+    
+
+@login_required(login_url='adminapp_login')
+@user_passes_test(is_admin)
+def adminapp_specialities(request):
+    if request.method == 'POST':
+        name = request.POST['specialization']
+        image = request.FILES['image']
+        slug = slugify(name)
+        try:
+            specialization = Specialization(
+                name=name,
+                slug=slug,
+                image=image,                
+            )
+            specialization.save()
+            messages.success(request, 'Specialization saved successfully.')
+        except Exception as e:
+            messages.error(request, f'Error saving specialization: {e}')
+    specializations = Specialization.objects.all()
+    context = {
+        'specializations': specializations,
+    }
+    return render(request, 'adminapp/specialities.html', context)
+
+
+def delete_specialization(request):
+    if request.method == 'POST':
+        spz_id = request.POST['specialization_id']
+        try:
+            specialization = Specialization.objects.get(id=spz_id)
+            specialization.delete()
+            messages.success(request, 'Specialization deleted successfully.')
+        except Exception as e:
+            messages.error(request, f'Error deleting specialization: {e}')
+        return redirect('adminapp_specialities')
+
+
+@login_required(login_url='adminapp_login')
+@user_passes_test(is_admin)
+def edit_specialization(request):
+    if request.method == 'POST':
+        spz_id = request.POST['specialization_id']
+        name = None
+        image = None
+        if 'specialization' in request.POST:
+            name = request.POST['specialization']
+        if 'image' in request.FILES:
+            image = request.FILES['image']
+        print(spz_id, name, image)
+        try:
+            specialization = Specialization.objects.get(id=spz_id)
+            if name:
+                specialization.name = name
+            if image:
+                specialization.image = image
+            specialization.save()
+            messages.success(request, 'Specialization updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Error editing specialization: {e}')
+        return redirect('adminapp_specialities')
+    
+
+@login_required(login_url='adminapp_login')
+@user_passes_test(is_admin)
+def adminapp_reviews(request):
+    reviews = ReviewRating.objects.all().order_by('-updated_at')
+    context = {
+        'reviews': reviews,
+    }
+    return render(request, 'adminapp/reviews.html', context)
+
+
+def delete_review(request):
+    if request.method == 'POST':
+        r_id = request.POST['review_id']
+        try:
+            review = ReviewRating.objects.get(id=r_id)
+            review.delete()
+            messages.success(request, 'Review deleted successfully.')
+        except Exception as e:
+            messages.error(request, f'Error deleting review: {e}')
+        return redirect('adminapp_reviews')

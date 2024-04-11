@@ -12,4 +12,9 @@ urlpatterns = [
     path('doctor_list/', views.adminapp_doctor_list, name='adminapp_doctor_list'),
     path('patient_list/', views.adminapp_patient_list, name='adminapp_patient_list'),
     path('ajax/change_status/', views.change_status, name='change_status'),
+    path('specialities/', views.adminapp_specialities, name='adminapp_specialities'),
+    path('delete_specialization/', views.delete_specialization, name='delete_specialization'),
+    path('edit_specialization/', views.edit_specialization, name='edit_specialization'),
+    path('reviews/', views.adminapp_reviews, name='adminapp_reviews'), 
+    path('delete_review/', views.delete_review, name='delete_review'),
 ]

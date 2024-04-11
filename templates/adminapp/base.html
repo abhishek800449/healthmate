@@ -97,10 +97,10 @@
                                 <a href="{% url 'index' %}"><i class="fe fe-home"></i> <span>Dashboard</span></a>
                             </li>
                             <li> 
-                                <a href="appointment-list.html"><i class="fe fe-layout"></i> <span>Appointments</span></a>
+                                <a href="appointment-list.html"><i class="fe fe-layout"></i> <span>Lab Appointments</span></a>
                             </li>
-                            <li> 
-                                <a href="specialities.html"><i class="fe fe-users"></i> <span>Specialities</span></a>
+                            <li class="{% if '/adminapp/specialities/' == request.path %}active{% endif %}"> 
+                                <a href="{% url 'adminapp_specialities'%}"><i class="fe fe-users"></i> <span>Specialities</span></a>
                             </li>
                             <li class="{% if '/adminapp/doctor_list/' == request.path %}active{% endif %}"> 
                                 <a href="{% url 'adminapp_doctor_list'%}"><i class="fe fe-user-plus"></i> <span>Doctors</span></a>
@@ -108,8 +108,8 @@
                             <li class="{% if '/adminapp/patient_list/' == request.path %}active{% endif %}"> 
                                 <a href="{% url 'adminapp_patient_list'%}"><i class="fe fe-user"></i> <span>Patients</span></a>
                             </li>
-                            <li> 
-                                <a href="reviews.html"><i class="fe fe-star-o"></i> <span>Reviews</span></a>
+                            <li class="{% if '/adminapp/reviews/' == request.path %}active{% endif %}"> 
+                                <a href="{% url 'adminapp_reviews' %}"><i class="fe fe-star-o"></i> <span>Reviews</span></a>
                             </li>
                             <li> 
                                 <a href="transactions-list.html"><i class="fe fe-activity"></i> <span>Transactions</span></a>

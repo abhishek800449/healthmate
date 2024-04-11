@@ -1,0 +1,120 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% block pagecontent %}
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+    <div class="content container-fluid">
+    
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">Reviews</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Reviews</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        {% include 'includes/alerts.html' %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Patient Name</th>
+                                        <th>Doctor Name</th>
+                                        <th>Ratings</th>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                        <th class="text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for review in reviews %}
+                                    <tr>
+                                        <td>
+                                            <h2 class="table-avatar">
+                                                <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{review.patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                <a href="#">{{review.patient.user.get_full_name}}</a>
+                                            </h2>
+                                        </td>
+                                        <td>
+                                            <h2 class="table-avatar">
+                                                <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{review.doctor.user.profile_picture.url}}" alt="User Image"></a>
+                                                <a href="#">{{review.doctor.user.get_full_name}}</a>
+                                            </h2>
+                                        </td>                                        
+                                        <td>
+                                            <i class="fe fe-star{% if review.rating >= 1.0 %} text-warning{% else %}-o text-secondary{% endif %}"></i>
+                                            <i class="fe fe-star{% if review.rating >= 2.0 %} text-warning{% else %}-o text-secondary{% endif %}"></i>
+                                            <i class="fe fe-star{% if review.rating >= 3.0 %} text-warning{% else %}-o text-secondary{% endif %}"></i>
+                                            <i class="fe fe-star{% if review.rating >= 4.0 %} text-warning{% else %}-o text-secondary{% endif %}"></i>
+                                            <i class="fe fe-star{% if review.rating >= 5.0 %} text-warning{% else %}-o text-secondary{% endif %}"></i>
+                                        </td>                                        
+                                        <td>
+                                            {{review.review}}
+                                        </td>
+                                            <td>{{review.updated_at.date}} <br><small>{{review.updated_at.time}}</small></td>
+                                        <td class="text-right">
+                                            <div class="actions">
+                                                <a class="btn btn-sm bg-danger-light delete-review-btn" data-toggle="modal" href="#delete_modal" data-review-id="{{review.id}}">
+                                                    <i class="fe fe-trash"></i> Delete
+                                                </a>                                                
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}                                 
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>			
+        </div>
+        
+    </div>			
+</div>
+<!-- /Page Wrapper -->
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document" >
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-content p-2">
+                    <h4 class="modal-title">Delete</h4>
+                    <form id="deleteForm" action="{% url 'delete_review' %}" method="POST">
+                    {% csrf_token %}
+                        <input type="hidden" name="review_id" id="reviewIdInput">
+                        <p class="mb-4">Are you sure want to delete?</p>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete Modal -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.delete-review-btn').click(function () {
+            var reviewId = $(this).data('review-id');
+            $('#reviewIdInput').val(reviewId);
+            console.log(reviewId)
+        });
+    });
+</script>
+
+{% endblock %}

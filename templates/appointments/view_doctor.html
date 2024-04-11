@@ -182,10 +182,21 @@
                                   <div class="d-flex justify-content-between mt-3"><small class="text-muted"><span id="chars">100</span> characters remaining</small></div>
                                 </div>
                                 <hr>
-
-                                <div class="submit-section">
-                                    <button type="submit" class="btn btn-primary submit-btn">Add Review</button>
-                                </div>
+                                {% if user.is_authenticated %}
+                                    {% if appointment %}
+                                        <div class="submit-section">
+                                            <button type="submit" class="btn btn-primary submit-btn">Add Review</button>
+                                        </div>
+                                    {% else %}
+                                        <div class="submit-section">
+                                            You have not yet consulted this doctor.
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="submit-section">
+                                        You must be logged in to post a review. <a href="{% url 'login' %}"><u> login</u></a>
+                                    </div>
+                                {% endif %}
                             </form>
                             <!-- /Write Review Form -->
                             
