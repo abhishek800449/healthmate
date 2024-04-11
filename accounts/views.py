@@ -386,7 +386,15 @@ def change_password(request):
                     '''
                 user.set_password(new_password)
                 user.save()
-                # auth.logout(request)
+
+                updated_user = auth.authenticate(email=user.email, password=new_password)
+                if updated_user is not None:
+                    auth.login(request, updated_user)  # Keep the user logged in
+                    messages.success(request, 'Password updated successfully.')
+                    return redirect('change_password')
+                else:
+                    messages.error(request, 'Failed to re-authenticate after password change.')
+                
                 messages.success(request, 'Password updated successfully.')
                 return redirect('change_password')
             else:
@@ -418,7 +426,15 @@ def change_doctor_password(request):
                     '''
                 user.set_password(new_password)
                 user.save()
-                # auth.logout(request)
+
+                updated_user = auth.authenticate(email=user.email, password=new_password)
+                if updated_user is not None:
+                    auth.login(request, updated_user)  # Keep the user logged in
+                    messages.success(request, 'Password updated successfully.')
+                    return redirect('change_doctor_password')
+                else:
+                    messages.error(request, 'Failed to re-authenticate after password change.')
+
                 messages.success(request, 'Password updated successfully.')
                 return redirect('change_doctor_password')
             else:

@@ -9,11 +9,11 @@
             <div class="col-md-12 col-12">
                 <nav aria-label="breadcrumb" class="page-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Add Prescription</li>
                     </ol>
                 </nav>
-                <h2 class="breadcrumb-title">Profile</h2>
+                <h2 class="breadcrumb-title">Add Prescription</h2>
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
                     <div class="card-body">
                         <div class="pro-widget-content">
                             <div class="profile-info-widget">
-                                <a href="#" class="booking-doc-img">
+                                <a href="{{patientprofile.get_url}}" class="booking-doc-img">
                                     <img src="{{patientprofile.user.profile_picture.url}}" alt="User Image">
                                 </a>
                                 <div class="profile-det-info">

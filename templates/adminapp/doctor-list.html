@@ -1,0 +1,96 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% block pagecontent %}
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+    <div class="content container-fluid">
+    
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">List of Doctors</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="#">Users</a></li>
+                        <li class="breadcrumb-item active">Doctor</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Doctor Name</th>
+                                        <th>Speciality</th>
+                                        <th>Member Since</th>
+                                        <th>Fee</th>
+                                        <th>Account Status</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for doctor in doctors %}
+                                    <tr>
+                                        <td>
+                                            <h2 class="table-avatar">
+                                                <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{doctor.user.profile_picture.url}}" alt="User Image"></a>
+                                                <a href="#">Dr. {{doctor.user.get_full_name}}</a>
+                                            </h2>
+                                        </td>
+                                        <td>{{doctor.specialization.name}}</td>
+                                        
+                                        <td>{{doctor.user.date_joined.date}} <br><small>{{doctor.user.date_joined.time}}</small></td>
+                                        
+                                        <td>₹{{doctor.price}}</td>
+                                        
+                                        <td>
+                                            <div class="status-toggle">
+                                                <input type="checkbox" id="{{doctor.user.id}}" class="check" {% if doctor.user.is_active %}checked{% endif %} onchange="changeDoctorStatus(this)">
+                                                <label for="{{doctor.user.id}}" class="checktoggle">checkbox</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>			
+        </div>
+        
+    </div>			
+</div>
+<!-- /Page Wrapper -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function changeDoctorStatus(checkbox) {
+        var docId = checkbox.id;
+        var isActive = checkbox.checked;
+
+        $.ajax({
+            url: '{% url "change_status" %}',
+            data: { 'doctor_id': docId, 'is_active': isActive },
+            dataType: 'json',
+            success: function (data) {
+                if (data) {
+                    // Handle success if needed
+                } else {
+                    console.error('Error: details not found');
+                }
+            }
+        });
+    }
+</script>
+
+{% endblock %}

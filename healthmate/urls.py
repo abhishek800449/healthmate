@@ -28,6 +28,7 @@ urlpatterns = [
     path('consult/', include('videoapp.urls')),
     path('checkout/', include('orders.urls')),
     path('labs/', include('labs.urls')),
+    path('adminapp/', include('adminapp.urls')),
 ]
 
 if settings.DEBUG:

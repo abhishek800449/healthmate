@@ -1,0 +1,74 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% block pagecontent %}
+
+
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+    <div class="content container-fluid">
+    
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">List of Patient</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="j#">Users</a></li>
+                        <li class="breadcrumb-item active">Patient</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Patient ID</th>
+                                        <th>Patient Name</th>
+                                        <th>Age</th>
+                                        <th>Address</th>
+                                        <th>Phone</th>
+                                        <th class="text-right">Date Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for patient in patients %}
+                                    <tr>
+                                        <td>#PT{{patient.id}}</td>
+                                        <td>
+                                            <h2 class="table-avatar">
+                                                <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                <a href="#">{{patient.user.get_full_name}} </a>
+                                            </h2>
+                                        </td>
+                                        <td>{{patient.user.age}}</td>
+                                        <td>{{patient.user.get_full_address}}</td>
+                                        <td>{{patient.user.phone_number}}</td>
+                                        <td class="text-right">{{patient.user.date_joined.date}}</td>
+                                    </tr>
+                                    {% endfor %}                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>			
+        </div>
+        
+    </div>			
+</div>
+<!-- /Page Wrapper -->
+
+
+
+{% endblock %}

@@ -9,7 +9,7 @@
             <div class="col-md-12 col-12">
                 <nav aria-label="breadcrumb" class="page-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Checkout</li>
                     </ol>
                 </nav>
@@ -131,11 +131,11 @@
                         {% if single_doctor %}
                             <!-- Booking Doctor Info -->
                             <div class="booking-doc-info">
-                                <a href="doctor-profile.html" class="booking-doc-img">
+                                <a href="{{single_doctor.get_url}}" class="booking-doc-img">
                                     <img src="{{single_doctor.user.profile_picture.url}}" alt="User Image">
                                 </a>
                                 <div class="booking-info">
-                                    <h4><a href="doctor-profile.html">Dr. {{single_doctor.user.get_full_name}}</a></h4>
+                                    <h4><a href="{{single_doctor.get_url}}">Dr. {{single_doctor.user.get_full_name}}</a></h4>
                                     <div class="rating">
                                         <i class="fas fa-star {% if single_doctor.averageReview >= 1.0 %} filled {% endif %}"></i>
                                         <i class="fas fa-star {% if single_doctor.averageReview >= 2.0 %} filled {% endif %}"></i>

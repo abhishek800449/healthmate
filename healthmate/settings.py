@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'accounts',
     'appointment',
     'orders',
-    'labs',
+    'labs', 
+    'adminapp',   
 ]
 
 MIDDLEWARE = [
