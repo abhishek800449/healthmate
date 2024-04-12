@@ -96,8 +96,8 @@
                             <li class="{% if '/adminapp/' == request.path %}active{% endif %}"> 
                                 <a href="{% url 'index' %}"><i class="fe fe-home"></i> <span>Dashboard</span></a>
                             </li>
-                            <li> 
-                                <a href="appointment-list.html"><i class="fe fe-layout"></i> <span>Lab Appointments</span></a>
+                            <li class="{% if '/adminapp/lab_appointments/' == request.path or '/adminapp/edit_lab_appointments/' in request.path%}active{% endif %}"> 
+                                <a href="{% url 'adminapp_lab_appointments' %}"><i class="fe fe-layout"></i> <span>Lab Appointments</span></a>
                             </li>
                             <li class="{% if '/adminapp/specialities/' == request.path %}active{% endif %}"> 
                                 <a href="{% url 'adminapp_specialities'%}"><i class="fe fe-users"></i> <span>Specialities</span></a>
@@ -111,8 +111,8 @@
                             <li class="{% if '/adminapp/reviews/' == request.path %}active{% endif %}"> 
                                 <a href="{% url 'adminapp_reviews' %}"><i class="fe fe-star-o"></i> <span>Reviews</span></a>
                             </li>
-                            <li> 
-                                <a href="transactions-list.html"><i class="fe fe-activity"></i> <span>Transactions</span></a>
+                            <li class="{% if '/adminapp/transactions/' == request.path %}active{% endif %}"> 
+                                <a href="{% url 'adminapp_transactions' %}"><i class="fe fe-activity"></i> <span>Transactions</span></a>
                             </li>
                             <li> 
                                 <a href="settings.html"><i class="fe fe-vector"></i> <span>Settings</span></a>

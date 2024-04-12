@@ -17,4 +17,9 @@ urlpatterns = [
     path('edit_specialization/', views.edit_specialization, name='edit_specialization'),
     path('reviews/', views.adminapp_reviews, name='adminapp_reviews'), 
     path('delete_review/', views.delete_review, name='delete_review'),
+    path('transactions/', views.adminapp_transactions, name='adminapp_transactions'),
+    path('delete_order/', views.delete_order, name='delete_order'),
+    path('lab_appointments/', views.adminapp_lab_appointments, name='adminapp_lab_appointments'),
+    path('edit_lab_appointments/<int:id>/', views.edit_lab_appointments, name='edit_lab_appointments'),
+    path('add_lab_results/<int:id>/', views.add_lab_results, name='add_lab_results'),
 ]

@@ -1,0 +1,204 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% block pagecontent %}
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+    <div class="content container-fluid">
+    
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">Edit Lab Appointments</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'adminapp_lab_appointments' %}">Lab Appointments</a></li>
+                        <li class="breadcrumb-item active">Edit Appointments</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        {% include 'includes/alerts.html' %}
+
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Booking Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Personal Information</h4>
+                        <form action="#">
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Full Name</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.full_name}}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Booked on</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.booking_date}}" readonly="readonly">
+                                        </div>
+                                    </div>                                    
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Phone Number</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.phone_number}}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Email</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.patient.user.email}}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <h4 class="card-title">Address</h4>
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Street Address</label>
+                                        <div class="col-lg-9">
+                                            <textarea rows="4" cols="5" class="form-control" placeholder="{{booking.address}}" readonly="readonly"></textarea>
+                                        </div>
+                                    </div>                                
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">City</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.city}}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Postal Code</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.zip_code}}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <h4 class="card-title">Lab Test Details</h4>
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Test Name</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.lab_test}}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Amount Paid</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="₹{{booking.amount_paid}}" readonly="readonly">
+                                        </div>
+                                    </div>                    
+                                </div>
+                                <div class="col-xl-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Apointment Date</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.appointment_date}}" readonly="readonly">
+                                        </div>
+                                    </div> 
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label">Apointment Time</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" value="{{booking.appointment_time}}" readonly="readonly">
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-6 d-flex">
+                <div class="card flex-fill">
+                    <div class="card-header">
+                        <h4 class="card-title">Add Lab Results</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'add_lab_results' booking.id %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Title</label>
+                                <div class="col-lg-9">
+                                    {{form.title}}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Description</label>
+                                <div class="col-lg-9">
+                                    {{form.description}}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Upload Result</label>
+                                <div class="col-lg-9">
+                                    {{form.file_path}}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 d-flex">
+                <div class="card flex-fill">
+                    <div class="card-header">
+                        <h4 class="card-title">Update Appoinment Status</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'edit_lab_appointments' booking.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Current Status</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" value="{{booking.status}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Status</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" name="status">
+                                    <span class="form-text text-muted"><small>Enter values in (pending, cancelled, confirmed, complete)</small></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Remarks</label>
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" name="remarks">
+                                </div>
+                            </div>                            
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>            
+        </div>
+
+
+    </div>			
+</div>
+<!-- /Page Wrapper -->
+
+{% endblock %}

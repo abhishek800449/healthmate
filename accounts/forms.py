@@ -108,6 +108,7 @@ class MedicalRecordForm(forms.ModelForm):
         super(MedicalRecordForm, self).__init__(*args, **kwargs)
         self.fields['title'].widget.attrs['class'] = 'form-control'
         self.fields['description'].widget.attrs['class'] = 'form-control'
+        self.fields['description'].widget.attrs['rows'] = '4'
         self.fields['file_path'].widget.attrs['class'] = 'form-control'
 
 

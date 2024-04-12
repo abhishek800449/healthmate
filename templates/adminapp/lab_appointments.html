@@ -1,0 +1,85 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% block pagecontent %}
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+    <div class="content container-fluid">
+    
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">Lab Appointments</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Lab Appointments</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        {% include 'includes/alerts.html' %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>User Name</th>
+                                        <th>Lab Test</th>
+                                        <th>Patient Name</th>
+                                        <th>Apointment Time</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in bookings %}
+                                        <tr>
+                                            <td>#U{{booking.patient.user.id}}</td>
+                                            <td>
+                                                <h2 class="table-avatar">
+                                                    <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{booking.patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                    <a href="#">{{booking.patient.user.get_full_name}}</a>
+                                                </h2>
+                                            </td>
+                                            <td>{{booking.lab_test}}</td>
+                                            <td>{{booking.full_name}}</td>
+                                            <td>{{booking.appointment_date}} <span class="text-primary d-block">{{booking.appointment_time}}</span></td>
+                                            <td class="text-center">
+                                                {% if booking.status == 'confirmed' or booking.status == 'complete' %}
+                                                    <span class="badge badge-pill bg-success inv-badge">{{booking.status}}</span>
+                                                {% elif booking.status == 'pending' %}
+                                                    <span class="badge badge-pill bg-warning inv-badge">{{booking.status}}</span>
+                                                {% elif booking.status == 'cancelled' %}
+                                                    <span class="badge badge-pill bg-danger inv-badge">{{booking.status}}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-right">
+                                                <div class="actions">
+                                                    <a class="btn btn-sm bg-info-light" href="{% url 'edit_lab_appointments' booking.id %}">
+                                                        <i class="fe fe-eye"></i> View
+                                                    </a>                                                    
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>			
+        </div>
+        
+    </div>			
+</div>
+<!-- /Page Wrapper -->
+
+{% endblock %}

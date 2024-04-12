@@ -2,10 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import user_passes_test
-from accounts.forms import RegistrationForm, UserForm
-from accounts.models import User, PatientProfile, DoctorProfile, Specialization, ReviewRating
+from accounts.forms import RegistrationForm, UserForm, MedicalRecordForm
+from accounts.models import User, PatientProfile, DoctorProfile, Specialization, ReviewRating, MedicalRecord
 from django.http import JsonResponse
 from django.utils.text import slugify
+from orders.models import Order
+from labs.models import LabTestBooking
 
 # Create your views here.
 
@@ -136,7 +138,6 @@ def adminapp_change_password(request):
 @user_passes_test(is_admin)
 def adminapp_doctor_list(request):
     doctors = DoctorProfile.objects.all()
-
     context = {
         'doctors': doctors,
     }
@@ -147,7 +148,6 @@ def adminapp_doctor_list(request):
 @user_passes_test(is_admin)
 def adminapp_patient_list(request):
     patients = PatientProfile.objects.all()
-
     context = {
         'patients': patients,
     }
@@ -220,7 +220,7 @@ def edit_specialization(request):
             name = request.POST['specialization']
         if 'image' in request.FILES:
             image = request.FILES['image']
-        print(spz_id, name, image)
+
         try:
             specialization = Specialization.objects.get(id=spz_id)
             if name:
@@ -254,3 +254,98 @@ def delete_review(request):
         except Exception as e:
             messages.error(request, f'Error deleting review: {e}')
         return redirect('adminapp_reviews')
+    
+
+@login_required(login_url='adminapp_login')
+@user_passes_test(is_admin)
+def adminapp_transactions(request):
+    orders = Order.objects.all()
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'adminapp/transactions.html', context)
+
+
+def delete_order(request):
+    if request.method == 'POST':
+        o_id = request.POST['order_id']
+        try:
+            order = Order.objects.get(id=o_id)
+            order.delete()
+            messages.success(request, 'Transaction deleted successfully.')
+        except Exception as e:
+            messages.error(request, f'Error deleting transaction: {e}')
+        return redirect('adminapp_transactions')
+    
+
+@login_required(login_url='adminapp_login')
+@user_passes_test(is_admin)
+def adminapp_lab_appointments(request):
+    bookings = LabTestBooking.objects.all().order_by('appointment_date', 'appointment_time', 'booking_date')
+    context = {
+        'bookings': bookings,
+    }
+    return render(request, 'adminapp/lab_appointments.html', context)
+
+
+@login_required(login_url='adminapp_login')
+@user_passes_test(is_admin)
+def edit_lab_appointments(request, id):
+    try:
+        booking = LabTestBooking.objects.get(id=id)        
+        if request.method == 'POST':
+            status = None
+            remarks = None
+            if 'status' in request.POST:
+                status = request.POST['status']
+            if 'remarks' in request.POST:
+                remarks = request.POST['remarks']
+            try:
+                if status:
+                    booking.status = status
+                if remarks:
+                    booking.remarks = remarks
+                booking.save()
+                messages.success(request, 'Status updated successfully.')
+            except Exception as e:
+                messages.error(request, f'Error updating status: {e}')
+
+        form = MedicalRecordForm()
+        context = {
+        'booking': booking,
+        'form': form,
+        }
+        return render(request, 'adminapp/edit_appointments.html', context)
+    except Exception as e:
+        messages.error(request, f'Error in loading appointment details.{e}')
+        return redirect('adminapp_lab_appointments')
+    
+
+@login_required(login_url='adminapp_login')
+@user_passes_test(is_admin)
+def add_lab_results(request, id):        
+    if request.method == 'POST':
+        try:
+            booking = LabTestBooking.objects.get(id=id)
+            patient = booking.patient
+            form = MedicalRecordForm(request.POST, request.FILES)
+            if form.is_valid():                
+                medical_record = MedicalRecord(
+                patient=patient,
+                title=form.cleaned_data['title'],
+                description=form.cleaned_data['description'],
+                file_path=form.cleaned_data['file_path'],
+                created_by=None
+            )
+                medical_record.save()
+                messages.success(request, 'Lab result saved successfully.')
+                return redirect('edit_lab_appointments', id)
+            else:
+                messages.error(request, 'Invalid form data. Please check the fields.')
+                return redirect('edit_lab_appointments', id)
+        except Exception as e:
+            messages.error(request, f'Error in uploading results.{e}')
+            return redirect('edit_lab_appointments', id)                   
+    else:
+        messages.error(request, 'Invalid request.')
+        return redirect('adminapp_lab_appointments')

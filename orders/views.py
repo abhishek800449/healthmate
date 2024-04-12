@@ -199,6 +199,7 @@ def lab_checkout(request):
                 'address': address,
                 'city': city,
                 'zip_code': zip,
+                'amount_paid':total,
                 }
             )
             if not created:
@@ -210,6 +211,7 @@ def lab_checkout(request):
                 pending.address = address
                 pending.city = city
                 pending.zip_code = zip
+                pending.amount_paid = total
                 pending.save()
             context = {
                 'test': lab_test,
@@ -237,6 +239,7 @@ def lab_success(request):
             address=pending.address,
             city=pending.city,
             zip_code=pending.zip_code,
+            amount_paid=pending.amount_paid,
         )
         lab_booking.save()
         pending.delete()
