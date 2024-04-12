@@ -177,8 +177,14 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Status</label>
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" name="status">
-                                    <span class="form-text text-muted"><small>Enter values in (pending, cancelled, confirmed, complete)</small></span>
+                                    <select class="form-control" name="status">
+                                        <option value="">Select status</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="cancelled">Cancelled</option>
+                                        <option value="complete">Complete</option>
+                                    </select>
+                                    <span class="form-text text-muted"><small>Available values (pending, cancelled, confirmed, complete)</small></span>
                                 </div>
                             </div>
                             <div class="form-group row">

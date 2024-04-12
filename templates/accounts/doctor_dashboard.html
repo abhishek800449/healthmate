@@ -58,7 +58,7 @@
                                                         <tr>
                                                             <th>Patient Name</th>
                                                             <th>Appt Date</th>
-                                                            <th>Purpose</th>
+                                                            <th>Contact</th>
                                                             <th>Type</th>
                                                             <th class="text-center">Paid Amount</th>
                                                             <th></th>
@@ -71,18 +71,20 @@
                                                             <td>
                                                                 <h2 class="table-avatar">
                                                                     <a href="{{appointment.patient.get_url}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{appointment.patient.user.profile_picture.url}}" alt="User Image"></a>
-                                                                    <a href="{{appointment.patient.get_url}}">{{appointment.patient.user.get_full_name}}<span>#PT0016</span></a>
+                                                                    <a href="{{appointment.patient.get_url}}">{{appointment.patient.user.get_full_name}}<span>#PT{{appointment.patient.id}}</span></a>
                                                                 </h2>
                                                             </td>
                                                             <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
-                                                            <td>General</td>
-                                                            <td>New Patient</td>
-                                                            <td class="text-center">$150</td>
+                                                            <td>{{appointment.patient.user.phone_number}}</td>
+                                                            <td>{{appointment.type}}</td>
+                                                            <td class="text-center">₹{{appointment.order_details.total_amount}}</td>
                                                             <td class="text-right">
                                                                 <div class="table-action d-flex align-items-center justify-content-end">
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-info-light mr-1">
-                                                                        <i class="far fa-eye"></i> View
-                                                                    </a>
+                                                                    {% with order=appointment.order_details %}
+                                                                        <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light mr-1" target="_blank">
+                                                                            <i class="far fa-eye"></i> View
+                                                                        </a>
+                                                                    {% endwith %}
                                                                     <form action="{% url 'accept' appointment.id %}" method="POST">
                                                                         {% csrf_token %}
                                                                         <button type="submit" class="btn btn-sm bg-success-light mr-1">
@@ -119,7 +121,7 @@
                                                         <tr>
                                                             <th>Patient Name</th>
                                                             <th>Appt Date</th>
-                                                            <th>Purpose</th>
+                                                            <th>Contact</th>
                                                             <th>Type</th>
                                                             <th class="text-center">Paid Amount</th>
                                                             <th></th>
@@ -132,19 +134,20 @@
                                                             <td>
                                                                 <h2 class="table-avatar">
                                                                     <a href="{{appointment.patient.get_url}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{appointment.patient.user.profile_picture.url}}" alt="User Image"></a>
-                                                                    <a href="{{appointment.patient.get_url}}">{{appointment.patient.user.get_full_name}}<span>#PT0016</span></a>
+                                                                    <a href="{{appointment.patient.get_url}}">{{appointment.patient.user.get_full_name}}<span>#PT{{appointment.patient.id}}</span></a>
                                                                 </h2>
                                                             </td>
                                                             <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
-                                                            <td>General</td>
-                                                            <td>New Patient</td>
-                                                            <td class="text-center">$150</td>
+                                                            <td>{{appointment.patient.user.phone_number}}</td>
+                                                            <td>{{appointment.type}}</td>
+                                                            <td class="text-center">₹{{appointment.order_details.total_amount}}</td>
                                                             <td class="text-right">
                                                                 <div class="table-action d-flex align-items-center justify-content-end">
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-info-light mr-1">
-                                                                        <i class="far fa-eye"></i> View
-                                                                    </a>
-                                                                    </a>
+                                                                    {% with order=appointment.order_details %}
+                                                                        <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light mr-1" target="_blank">
+                                                                            <i class="far fa-eye"></i> View
+                                                                        </a>
+                                                                    {% endwith %}                                                                   
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -168,7 +171,7 @@
                                                         <tr>
                                                             <th>Patient Name</th>
                                                             <th>Appt Date</th>
-                                                            <th>Purpose</th>
+                                                            <th>Contact</th>
                                                             <th>Type</th>
                                                             <th class="text-center">Paid Amount</th>
                                                             <th></th>
@@ -181,19 +184,20 @@
                                                             <td>
                                                                 <h2 class="table-avatar">
                                                                     <a href="{{appointment.patient.get_url}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{appointment.patient.user.profile_picture.url}}" alt="User Image"></a>
-                                                                    <a href="{{appointment.patient.get_url}}">{{appointment.patient.user.get_full_name}}<span>#PT0016</span></a>
+                                                                    <a href="{{appointment.patient.get_url}}">{{appointment.patient.user.get_full_name}}<span>#PT{{appointment.patient.id}}</span></a>
                                                                 </h2>
                                                             </td>
                                                             <td>{{appointment.date}}<span class="d-block text-info">{{appointment.time}}</span></td>
-                                                            <td>General</td>
-                                                            <td>New Patient</td>
-                                                            <td class="text-center">$150</td>
+                                                            <td>{{appointment.patient.user.phone_number}}</td>
+                                                            <td>{{appointment.type}}</td>
+                                                            <td class="text-center">₹{{appointment.order_details.total_amount}}</td>
                                                             <td class="text-right">
                                                                 <div class="table-action d-flex align-items-center justify-content-end">
-                                                                    <a href="javascript:void(0);" class="btn btn-sm bg-danger-light mr-1">
-                                                                        <i class="far fa-edit"></i> Add Reason
-                                                                    </a>
-                                                                    </a>
+                                                                    {% with order=appointment.order_details %}
+                                                                        <a href="{% url 'view_invoice' order.id %}" class="btn btn-sm bg-info-light mr-1" target="_blank">
+                                                                            <i class="far fa-eye"></i> View
+                                                                        </a>
+                                                                    {% endwith %}                                                                   
                                                                 </div>
                                                             </td>
                                                         </tr>

@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.utils.text import slugify
 from orders.models import Order
 from labs.models import LabTestBooking
+from django.db.models import Q
 
 # Create your views here.
 
@@ -49,7 +50,19 @@ def adminapp_register(request):
 @login_required(login_url='adminapp_login')
 @user_passes_test(is_admin)
 def index(request):
-    return render(request, 'adminapp/index.html')
+    doc_count = DoctorProfile.objects.count()
+    pat_count = PatientProfile.objects.count()
+    app_count = Order.objects.count()
+    doctors = DoctorProfile.objects.all().order_by('-user__date_joined')[:5]
+    patients = PatientProfile.objects.all().order_by('-user__date_joined')[:5]
+    context = {
+        'doc_count': doc_count,
+        'pat_count': pat_count,
+        'app_count': app_count,
+        'doctors': doctors,
+        'patients': patients,
+    }
+    return render(request, 'adminapp/index.html', context)
 
 
 def adminapp_login(request):
@@ -282,8 +295,14 @@ def delete_order(request):
 @user_passes_test(is_admin)
 def adminapp_lab_appointments(request):
     bookings = LabTestBooking.objects.all().order_by('appointment_date', 'appointment_time', 'booking_date')
+    pending_bookings = LabTestBooking.objects.filter(Q(status='pending') | Q(status='confirmed')).order_by('appointment_date', 'appointment_time', 'booking_date')
+    cancelled_bookings = LabTestBooking.objects.filter(status='cancelled').order_by('appointment_date', 'appointment_time', 'booking_date')
+    complete_bookings = LabTestBooking.objects.filter(status='complete').order_by('appointment_date', 'appointment_time', 'booking_date')
     context = {
         'bookings': bookings,
+        'pending_bookings': pending_bookings,
+        'cancelled_bookings': cancelled_bookings,
+        'complete_bookings': complete_bookings,
     }
     return render(request, 'adminapp/lab_appointments.html', context)
 

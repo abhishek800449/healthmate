@@ -24,55 +24,204 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <div class="table-responsive">
-                            <table class="table table-hover table-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>User ID</th>
-                                        <th>User Name</th>
-                                        <th>Lab Test</th>
-                                        <th>Patient Name</th>
-                                        <th>Apointment Time</th>
-                                        <th class="text-center">Status</th>
-                                        <th class="text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for booking in bookings %}
-                                        <tr>
-                                            <td>#U{{booking.patient.user.id}}</td>
-                                            <td>
-                                                <h2 class="table-avatar">
-                                                    <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{booking.patient.user.profile_picture.url}}" alt="User Image"></a>
-                                                    <a href="#">{{booking.patient.user.get_full_name}}</a>
-                                                </h2>
-                                            </td>
-                                            <td>{{booking.lab_test}}</td>
-                                            <td>{{booking.full_name}}</td>
-                                            <td>{{booking.appointment_date}} <span class="text-primary d-block">{{booking.appointment_time}}</span></td>
-                                            <td class="text-center">
-                                                {% if booking.status == 'confirmed' or booking.status == 'complete' %}
-                                                    <span class="badge badge-pill bg-success inv-badge">{{booking.status}}</span>
-                                                {% elif booking.status == 'pending' %}
-                                                    <span class="badge badge-pill bg-warning inv-badge">{{booking.status}}</span>
-                                                {% elif booking.status == 'cancelled' %}
-                                                    <span class="badge badge-pill bg-danger inv-badge">{{booking.status}}</span>
-                                                {% endif %}
-                                            </td>
-                                            <td class="text-right">
-                                                <div class="actions">
-                                                    <a class="btn btn-sm bg-info-light" href="{% url 'edit_lab_appointments' booking.id %}">
-                                                        <i class="fe fe-eye"></i> View
-                                                    </a>                                                    
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <ul class="nav nav-tabs nav-tabs-bottom">
+                            <li class="nav-item"><a class="nav-link active" href="#pandingtab" data-toggle="tab">Pending</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#alltab" data-toggle="tab">All</a></li>
+                            
+                            <li class="nav-item"><a class="nav-link" href="#completetab" data-toggle="tab">Complete</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#cancelledtab" data-toggle="tab">Cancelled</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+
+                            <div class="tab-pane  show active" id="pandingtab">
+                                <div class="table-responsive">                            
+                                    <table class="table table-hover table-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>User ID</th>
+                                                <th>User Name</th>
+                                                <th>Lab Test</th>
+                                                <th>Patient Name</th>
+                                                <th>Apointment Time</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-right">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for booking in pending_bookings %}
+                                                <tr>
+                                                    <td>#U{{booking.patient.user.id}}</td>
+                                                    <td>
+                                                        <h2 class="table-avatar">
+                                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{booking.patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                            <a href="#">{{booking.patient.user.get_full_name}}</a>
+                                                        </h2>
+                                                    </td>
+                                                    <td>{{booking.lab_test}}</td>
+                                                    <td>{{booking.full_name}}</td>
+                                                    <td>{{booking.appointment_date}} <span class="text-primary d-block">{{booking.appointment_time}}</span></td>
+                                                    <td class="text-center">
+                                                        {% if booking.status == 'confirmed'%}
+                                                            <span class="badge badge-pill bg-success inv-badge">{{booking.status}}</span>
+                                                        {% elif booking.status == 'pending' %}
+                                                            <span class="badge badge-pill bg-warning inv-badge">{{booking.status}}</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <div class="actions">
+                                                            <a class="btn btn-sm bg-info-light" href="{% url 'edit_lab_appointments' booking.id %}">
+                                                                <i class="fe fe-eye"></i> View
+                                                            </a>                                                    
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>                                    
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="alltab">
+                                <div class="table-responsive">                           
+                                    <table class="table table-hover table-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>User ID</th>
+                                                <th>User Name</th>
+                                                <th>Lab Test</th>
+                                                <th>Patient Name</th>
+                                                <th>Apointment Time</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-right">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for booking in bookings %}
+                                                <tr>
+                                                    <td>#U{{booking.patient.user.id}}</td>
+                                                    <td>
+                                                        <h2 class="table-avatar">
+                                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{booking.patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                            <a href="#">{{booking.patient.user.get_full_name}}</a>
+                                                        </h2>
+                                                    </td>
+                                                    <td>{{booking.lab_test}}</td>
+                                                    <td>{{booking.full_name}}</td>
+                                                    <td>{{booking.appointment_date}} <span class="text-primary d-block">{{booking.appointment_time}}</span></td>
+                                                    <td class="text-center">
+                                                        {% if booking.status == 'confirmed' or booking.status == 'complete' %}
+                                                            <span class="badge badge-pill bg-success inv-badge">{{booking.status}}</span>
+                                                        {% elif booking.status == 'pending' %}
+                                                            <span class="badge badge-pill bg-warning inv-badge">{{booking.status}}</span>
+                                                        {% elif booking.status == 'cancelled' %}
+                                                            <span class="badge badge-pill bg-danger inv-badge">{{booking.status}}</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <div class="actions">
+                                                            <a class="btn btn-sm bg-info-light" href="{% url 'edit_lab_appointments' booking.id %}">
+                                                                <i class="fe fe-eye"></i> View
+                                                            </a>                                                    
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>                                    
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="completetab">
+                                <div class="table-responsive">                            
+                                    <table class="table table-hover table-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>User ID</th>
+                                                <th>User Name</th>
+                                                <th>Lab Test</th>
+                                                <th>Patient Name</th>
+                                                <th>Apointment Time</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-right">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for booking in complete_bookings %}
+                                                <tr>
+                                                    <td>#U{{booking.patient.user.id}}</td>
+                                                    <td>
+                                                        <h2 class="table-avatar">
+                                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{booking.patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                            <a href="#">{{booking.patient.user.get_full_name}}</a>
+                                                        </h2>
+                                                    </td>
+                                                    <td>{{booking.lab_test}}</td>
+                                                    <td>{{booking.full_name}}</td>
+                                                    <td>{{booking.appointment_date}} <span class="text-primary d-block">{{booking.appointment_time}}</span></td>
+                                                    <td class="text-center">
+                                                        <span class="badge badge-pill bg-success inv-badge">{{booking.status}}</span>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <div class="actions">
+                                                            <a class="btn btn-sm bg-info-light" href="{% url 'edit_lab_appointments' booking.id %}">
+                                                                <i class="fe fe-eye"></i> View
+                                                            </a>                                                    
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>                                    
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="cancelledtab">
+                                <div class="table-responsive">                           
+                                    <table class="table table-hover table-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>User ID</th>
+                                                <th>User Name</th>
+                                                <th>Lab Test</th>
+                                                <th>Patient Name</th>
+                                                <th>Apointment Time</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-right">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for booking in cancelled_bookings %}
+                                                <tr>
+                                                    <td>#U{{booking.patient.user.id}}</td>
+                                                    <td>
+                                                        <h2 class="table-avatar">
+                                                            <a href="#" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{booking.patient.user.profile_picture.url}}" alt="User Image"></a>
+                                                            <a href="#">{{booking.patient.user.get_full_name}}</a>
+                                                        </h2>
+                                                    </td>
+                                                    <td>{{booking.lab_test}}</td>
+                                                    <td>{{booking.full_name}}</td>
+                                                    <td>{{booking.appointment_date}} <span class="text-primary d-block">{{booking.appointment_time}}</span></td>
+                                                    <td class="text-center">
+                                                        <span class="badge badge-pill bg-danger inv-badge">{{booking.status}}</span>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <div class="actions">
+                                                            <a class="btn btn-sm bg-info-light" href="{% url 'edit_lab_appointments' booking.id %}">
+                                                                <i class="fe fe-eye"></i> View
+                                                            </a>                                                    
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>                                    
+                                </div>
+                            </div>
+
                         </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>			
@@ -81,5 +230,4 @@
     </div>			
 </div>
 <!-- /Page Wrapper -->
-
 {% endblock %}
