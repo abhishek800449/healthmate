@@ -7,7 +7,8 @@ from accounts.models import User, PatientProfile, DoctorProfile, Specialization,
 from django.http import JsonResponse
 from django.utils.text import slugify
 from orders.models import Order
-from labs.models import LabTestBooking
+from labs.models import LabTestBooking, LabTest
+from labs.forms import LabTestForm
 from django.db.models import Q
 
 # Create your views here.
@@ -368,3 +369,38 @@ def add_lab_results(request, id):
     else:
         messages.error(request, 'Invalid request.')
         return redirect('adminapp_lab_appointments')
+    
+
+@login_required(login_url='adminapp_login')
+@user_passes_test(is_admin)
+def adminapp_lab_tests(request):
+    if request.method == 'POST':
+        form = LabTestForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Lab test added successfully.')
+        else:
+            messages.error(request, 'Please enter valid data in the form!!')
+
+    tests = LabTest.objects.all()
+    form = LabTestForm()
+    context = {
+        'form': form,
+        'tests': tests,
+    }
+    return render(request, 'adminapp/lab-tests.html', context)
+
+
+def delete_lab_tests(request):
+    if request.method == 'POST':
+        test_id = request.POST['lab_test_id']
+        try:
+            test = LabTest.objects.get(id=test_id)
+            test.delete()
+            messages.success(request, 'Lab Test deleted successfully.')
+        except Exception as e:
+            messages.error(request, f'Error deleting test: {e}')
+        return redirect('adminapp_lab_tests')
+    else:
+        messages.error(request, 'Invalid Request')
+        return redirect('adminapp_lab_tests')

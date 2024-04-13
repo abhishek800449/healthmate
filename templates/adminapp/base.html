@@ -17,9 +17,7 @@
         <link rel="stylesheet" href="{% static 'assets_admin/css/font-awesome.min.css' %}">
 		
 		<!-- Feathericon CSS -->
-        <link rel="stylesheet" href="{% static 'assets_admin/css/feathericon.min.css' %}">
-		
-		<link rel="stylesheet" href="{% static 'assets_admin/plugins/morris/morris.css' %}">
+        <link rel="stylesheet" href="{% static 'assets_admin/css/feathericon.min.css' %}">		
 		
 		<!-- Main CSS -->
         <link rel="stylesheet" href="{% static 'assets_admin/css/style.css' %}">
@@ -99,6 +97,9 @@
                             <li class="{% if '/adminapp/lab_appointments/' == request.path or '/adminapp/edit_lab_appointments/' in request.path%}active{% endif %}"> 
                                 <a href="{% url 'adminapp_lab_appointments' %}"><i class="fe fe-layout"></i> <span>Lab Appointments</span></a>
                             </li>
+                            <li class="{% if '/adminapp/lab_tests/' == request.path %}active{% endif %}"> 
+								<a href="{% url 'adminapp_lab_tests' %}"><i class="fe fe-vector"></i> <span>Lab Tests</span></a>
+							</li>
                             <li class="{% if '/adminapp/specialities/' == request.path %}active{% endif %}"> 
                                 <a href="{% url 'adminapp_specialities'%}"><i class="fe fe-users"></i> <span>Specialities</span></a>
                             </li>

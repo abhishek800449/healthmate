@@ -1,5 +1,5 @@
 from django import forms
-from .models import LabTestBooking
+from .models import LabTestBooking, LabTest
 from django.utils import timezone
 
 class LabTestBookingForm(forms.ModelForm):
@@ -11,5 +11,16 @@ class LabTestBookingForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(LabTestBookingForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
+
+class LabTestForm(forms.ModelForm):
+    class Meta:
+        model = LabTest
+        fields = ['name', 'description', 'image', 'price']
+
+    def __init__(self, *args, **kwargs):
+        super(LabTestForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'

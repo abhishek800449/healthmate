@@ -59,7 +59,7 @@
                                     <td>{{lab.appointment_date}}<span class="d-block text-info">{{lab.appointment_time}}</span></td>
                                     <td>{{lab.booking_date}}</td>
                                     <td>
-                                        {% if lab.status == 'confirmed' %}
+                                        {% if lab.status == 'confirmed' or lab.status == 'complete' %}
                                             <span class="badge badge-pill bg-success-light">{{ lab.status }}</span>
                                         {% elif lab.status == 'pending' %}
                                             <span class="badge badge-pill bg-warning-light">{{ lab.status }}</span>

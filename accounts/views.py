@@ -110,8 +110,8 @@ def logout(request):
 def patient_dashboard(request):
     patientprofile = PatientProfile.objects.get(user_id=request.user.id)
     form = MedicalRecordForm()
-    medicals = MedicalRecord.objects.filter(patient=patientprofile)
-    prescriptions = Prescription.objects.filter(patient=patientprofile)
+    medicals = MedicalRecord.objects.filter(patient=patientprofile).order_by('-date_created')
+    prescriptions = Prescription.objects.filter(patient=patientprofile).order_by('-date_created')
     orders = Order.objects.filter(patient_profile=patientprofile).order_by('-issue_date')
     try:
         appointments = Appointment.objects.filter(patient=patientprofile)       
@@ -277,6 +277,13 @@ def doctor_dashboard(request):
         return redirect('doctor_profile')
     try:
         appointments = Appointment.objects.filter(doctor=doctorprofile).order_by('date', 'time')
+        today = date.today()
+        for appointment in appointments:
+            if appointment.status == 'pending' and appointment.date>today:
+                appointment.status = 'cancelled'
+            elif appointment.status == 'confirmed' and appointment.date>today:
+                appointment.status = 'complete'
+            appointment.save()
     except Appointment.DoesNotExist:
         appointments = None
     context = {

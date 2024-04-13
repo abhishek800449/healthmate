@@ -22,4 +22,6 @@ urlpatterns = [
     path('lab_appointments/', views.adminapp_lab_appointments, name='adminapp_lab_appointments'),
     path('edit_lab_appointments/<int:id>/', views.edit_lab_appointments, name='edit_lab_appointments'),
     path('add_lab_results/<int:id>/', views.add_lab_results, name='add_lab_results'),
+    path('lab_tests/', views.adminapp_lab_tests, name='adminapp_lab_tests'),
+    path('delete_lab_tests/', views.delete_lab_tests, name='delete_lab_tests'),    
 ]

@@ -1,0 +1,104 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% block pagecontent %}
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+    <div class="content container-fluid">
+    
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">Lab Tests</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Lab Tests</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        {% include 'includes/alerts.html' %}
+        <div class="row">
+            
+            <div class="col-12">
+                
+                <!-- General -->
+                
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">General</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="{% url 'adminapp_lab_tests' %}" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="id_name">Test Name</label>
+                                    {{form.name}}
+                                </div>                                
+                                <div class="form-group">
+                                    <label for="id_description">Description</label>
+                                    {{form.description}}
+                                    <small class="text-secondary">Write test <b>description</b> here</small><br>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="id_price">Price</label>
+                                            {{form.price}}
+                                            <small class="text-secondary">Enter price in <b>INR(₹)</b></small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="id_image">Test Image</label>
+                                            {{form.image}}
+                                            <small class="text-secondary">Recommended image size is <b>150px x 150px</b></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col text-right">
+                                        <button type="submit" class="btn btn-primary">Add Lab Test</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                
+                <!-- /General -->
+                    
+            </div>
+        </div>
+        
+
+        <div class="row">
+            {% for test in tests %}
+            <div class="col-12 col-md-4 col-lg-3 d-flex">
+                <div class="card flex-fill">
+                    <img alt="Card Image" src="{{test.image.url}}" class="card-img-top">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{test.name}}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text mb-1">{{test.description}}</p>
+                        <p class="card-text mb-1"><b>Price:</b> ₹{{test.price}}</p>                        
+                    </div>
+                    <div class="card-footer">
+                        <form action="{% url 'delete_lab_tests' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="lab_test_id" value="{{test.id}}">
+                            <button type="submit" class="btn btn-sm bg-danger-light"><i class="fe fe-trash"></i> Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>			
+</div>
+<!-- /Page Wrapper -->
+
+{% endblock %}
