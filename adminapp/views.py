@@ -355,7 +355,7 @@ def add_lab_results(request, id):
                 title=form.cleaned_data['title'],
                 description=form.cleaned_data['description'],
                 file_path=form.cleaned_data['file_path'],
-                created_by=None
+                created_by=request.user,
             )
                 medical_record.save()
                 messages.success(request, 'Lab result saved successfully.')

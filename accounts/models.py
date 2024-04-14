@@ -141,6 +141,13 @@ class User(AbstractBaseUser):
             return today.year - self.dob.year - ((today.month, today.day) < (self.dob.month, self.dob.day))
         except:
             return None
+        
+    def doc(self):
+        try:
+            doctor = DoctorProfile.objects.get(user=self)
+            return doctor
+        except:
+            return None
 
 
 class Specialization(models.Model):
@@ -240,7 +247,7 @@ class MedicalRecord(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True, null=True)
     file_path = models.FileField(upload_to='uploads/',blank=True, null=True)
-    created_by = models.ForeignKey(DoctorProfile, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
 

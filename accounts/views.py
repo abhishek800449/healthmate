@@ -357,7 +357,7 @@ def view_patient(request, patient_username=None):
     patient = User.objects.get(username=patient_username)
     patientprofile = PatientProfile.objects.get(user=patient)
     doctorprofile = DoctorProfile.objects.get(user_id=request.user.id)
-    medicals = MedicalRecord.objects.filter(patient=patientprofile)
+    medicals = MedicalRecord.objects.filter(patient=patientprofile).order_by('-date_created')
     prescriptions = Prescription.objects.filter(patient=patientprofile)
     form = MedicalRecordForm()
     try:
@@ -460,14 +460,12 @@ def change_doctor_password(request):
 def save_record(request):
     if request.method == 'POST':
         form = MedicalRecordForm(request.POST, request.FILES)
-        user = request.user
+        user = request.user 
         if form.is_valid():
             patient_id = request.POST['patient_id']
             patient = PatientProfile.objects.get(id=patient_id)
-            if user.is_staff:
-                creator = DoctorProfile.objects.get(user=user)
-            else:
-                creator = None
+            creator = user
+
             medical_record = MedicalRecord(
                 patient=patient,
                 title=form.cleaned_data['title'],
