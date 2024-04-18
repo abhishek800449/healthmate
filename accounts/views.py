@@ -286,9 +286,9 @@ def doctor_dashboard(request):
         appointments = Appointment.objects.filter(doctor=doctorprofile).order_by('date', 'time')
         today = date.today()
         for appointment in appointments:
-            if appointment.status == 'pending' and appointment.date>today:
+            if appointment.status == 'pending' and appointment.date<today:
                 appointment.status = 'cancelled'
-            elif appointment.status == 'confirmed' and appointment.date>today:
+            elif appointment.status == 'confirmed' and appointment.date<today:
                 appointment.status = 'complete'
             appointment.save()
     except Appointment.DoesNotExist:
