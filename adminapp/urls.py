@@ -23,5 +23,8 @@ urlpatterns = [
     path('edit_lab_appointments/<int:id>/', views.edit_lab_appointments, name='edit_lab_appointments'),
     path('add_lab_results/<int:id>/', views.add_lab_results, name='add_lab_results'),
     path('lab_tests/', views.adminapp_lab_tests, name='adminapp_lab_tests'),
-    path('delete_lab_tests/', views.delete_lab_tests, name='delete_lab_tests'),    
+    path('delete_lab_tests/', views.delete_lab_tests, name='delete_lab_tests'),
+    path('forgotPassword/', views.forgotAdminPassword, name='forgotAdminPassword'),
+    path('resetpassword_validate/<uidb64>/<token>/', views.resetAdminpassword_validate, name='resetAdminpassword_validate'),
+    path('resetPassword/', views.resetAdminPassword, name='resetAdminPassword'),
 ]

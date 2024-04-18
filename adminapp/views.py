@@ -10,6 +10,13 @@ from orders.models import Order
 from labs.models import LabTestBooking, LabTest
 from labs.forms import LabTestForm
 from django.db.models import Q
+# importing files for verification
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
 
 # Create your views here.
 
@@ -404,3 +411,63 @@ def delete_lab_tests(request):
     else:
         messages.error(request, 'Invalid Request')
         return redirect('adminapp_lab_tests')
+    
+
+def forgotAdminPassword(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email__exact=email)
+            # sending reset password email
+            current_site = get_current_site(request)
+            mail_subject = 'Reset your password'
+            message = render_to_string('adminapp/reset_password_email.html', {
+                'user': user,
+                'domain': current_site,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)), # we are encoding the primary key of user
+                'token': default_token_generator.make_token(user),
+            })
+            to_email = email
+            send_email = EmailMessage(mail_subject, message, to=[to_email,])
+            send_email.send()
+
+            messages.success(request, 'Password reset email has been sent to your email address.')
+            return redirect('adminapp_login')
+
+        else:
+            messages.error(request, 'Account does not exists')
+            return redirect('forgotAdminPassword')
+    return render(request, 'adminapp/forgotPassword.html')
+
+
+def resetAdminpassword_validate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User._default_manager.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        request.session['uid']=uid
+        messages.success(request, 'Please reset your password.')
+        return redirect('resetAdminPassword')
+    else:
+        messages.error(request, 'Invalid Link')
+        return redirect('adminapp_login')
+    
+
+def resetAdminPassword(request):
+    if request.method == 'POST':
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        if password==confirm_password:
+            uid = request.session.get('uid')
+            user = User.objects.get(pk=uid)
+            user.set_password(password) # this is build in function in django normal save() does not work for paswords.
+            user.save()
+            messages.success(request, 'Password reset successful.')
+            return redirect('adminapp_login')
+        else:
+            messages.error(request, 'Password do not match.')
+            return redirect('resetAdminPassword')
+    else:
+        return render(request, 'adminapp/resetPassword.html')
